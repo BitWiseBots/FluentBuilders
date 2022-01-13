@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitWiseBots.FluentBuilders", "src\BitWiseBots.FluentBuilders\BitWiseBots.FluentBuilders.csproj", "{F1DCE291-F3D2-4A97-9F6D-B6BFEBF2A8A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{117CC81B-DB0B-40F1-BFEC-1C899D11F87D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7A88B9C8-ADC2-45AF-B90A-DC178CF5E94B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{45C36E02-A589-4258-BFA2-9AC441E1CE67}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		docs\user-guide.md = docs\user-guide.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitWiseBots.FluentBuilders.Tests.Unit", "tests\BitWiseBots.FluentBuilders.Tests.Unit\BitWiseBots.FluentBuilders.Tests.Unit.csproj", "{0E1148FF-9208-4758-8962-35940A912DB6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F1DCE291-F3D2-4A97-9F6D-B6BFEBF2A8A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1DCE291-F3D2-4A97-9F6D-B6BFEBF2A8A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1DCE291-F3D2-4A97-9F6D-B6BFEBF2A8A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1DCE291-F3D2-4A97-9F6D-B6BFEBF2A8A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E1148FF-9208-4758-8962-35940A912DB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E1148FF-9208-4758-8962-35940A912DB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E1148FF-9208-4758-8962-35940A912DB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E1148FF-9208-4758-8962-35940A912DB6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F1DCE291-F3D2-4A97-9F6D-B6BFEBF2A8A6} = {117CC81B-DB0B-40F1-BFEC-1C899D11F87D}
+		{0E1148FF-9208-4758-8962-35940A912DB6} = {7A88B9C8-ADC2-45AF-B90A-DC178CF5E94B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A6A1C9A0-9A7A-448F-81A3-8FBB7DA30268}
+	EndGlobalSection
+EndGlobal
