@@ -11,19 +11,19 @@ namespace BitWiseBots.FluentBuilders.Interfaces
     public interface IHideObjectMembers
     {
         /// <summary>
-        /// Hides <see cref="Object.GetType()"/> from intellisense.
+        /// Hides <see cref="object.GetType()"/> from intellisense.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         Type GetType();
 
         /// <summary>
-        /// Hides <see cref="Object.GetHashCode()"/> from intellisense.
+        /// Hides <see cref="object.GetHashCode()"/> from intellisense.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         int GetHashCode();
 
         /// <summary>
-        /// Hides <see cref="Object.ToString()"/> from intellisense.
+        /// Hides <see cref="object.ToString()"/> from intellisense.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         string ToString();

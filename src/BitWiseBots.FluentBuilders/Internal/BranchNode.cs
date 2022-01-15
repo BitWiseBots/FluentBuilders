@@ -5,21 +5,6 @@ using System.Reflection;
 
 namespace BitWiseBots.FluentBuilders.Internal
 {
-    internal sealed class RootNode : BranchNode
-    {
-        public RootNode(object sourceBuilder, BuilderRegistrationStore registrationStore, Type nodeType ) : base(nodeType, null)
-        {
-            SourceBuilder = sourceBuilder;
-            BuilderRegistrationStore = registrationStore;
-        }
-
-        public object SourceBuilder { get; }
-        public BuilderRegistrationStore BuilderRegistrationStore { get; }
-
-        public override RootNode Root => this;
-        protected override bool IsBuilderNode => false;
-    }
-
     /// <summary>
     /// A node that has children nodes.
     /// </summary>
@@ -141,8 +126,6 @@ namespace BitWiseBots.FluentBuilders.Internal
                 case IndexExpression indexExpression:
                     _nodeBranches.Add(key, new IndexedBranchNode(indexExpression, Root));
                     break;
-                default:
-                    throw new NotSupportedException();
             }
 
             return _nodeBranches[key];
@@ -154,6 +137,7 @@ namespace BitWiseBots.FluentBuilders.Internal
         /// <param name="key">The key for the node being added.</param>
         /// <param name="expr">The expression that accesses the property represented by the node.</param>
         /// <param name="value">The valueFunc to be set for the property represented by the node.</param>
+        /// <param name="allowDefaults"></param>
         /// <returns>Either the newly created <see cref="ValueNode"/> if it didn't yet exist, or the existing <see cref="ValueNode"/> if it did.</returns>
         public ValueNode AddOrGetValueNode<T>(string key, Expression expr, object value, bool allowDefaults)
         {
@@ -170,8 +154,6 @@ namespace BitWiseBots.FluentBuilders.Internal
                 case IndexExpression indexExpression:
                     _nodeValues.Add(key, new IndexedValueNode(indexExpression, value, typeof(T), allowDefaults, Root));
                     break;
-                default:
-                    throw new NotSupportedException();
             }
 
             return _nodeValues[key];
@@ -213,12 +195,10 @@ namespace BitWiseBots.FluentBuilders.Internal
             {
                 return Activator.CreateInstance(NodeType, true);
             }
-            else
-            {
-                var builderType = typeof(Builder<>);
-                var genBuilderType = builderType.MakeGenericType(NodeType);
-                return Activator.CreateInstance(genBuilderType, BindingFlags.NonPublic | BindingFlags.Instance, null, new object[]{Root.BuilderRegistrationStore, null, null}, null);
-            }
+
+            var builderType = typeof(Builder<>);
+            var genBuilderType = builderType.MakeGenericType(NodeType);
+            return Activator.CreateInstance(genBuilderType, BindingFlags.NonPublic | BindingFlags.Instance, null, new object[]{Root.BuilderRegistrationStore, null, null}, null);
         }
 
         /// <summary>
@@ -231,14 +211,14 @@ namespace BitWiseBots.FluentBuilders.Internal
         /// </remarks>
         private void ApplyToBuilder<T>(Builder<T> builder)
         {
-            foreach (var nodeBranch in _nodeBranches)
+            foreach (var (key, value) in _nodeBranches)
             {
-                builder.BuilderRootNode.AddBranchNode(nodeBranch.Key, nodeBranch.Value);
+                builder.BuilderRootNode.AddBranchNode(key, value);
             }
 
-            foreach (var nodeValue in _nodeValues)
+            foreach (var (key, value) in _nodeValues)
             {
-                builder.BuilderRootNode.AddValueNode(nodeValue.Key, nodeValue.Value);
+                builder.BuilderRootNode.AddValueNode(key, value);
             }
         }
 

@@ -14,11 +14,12 @@ namespace BitWiseBots.FluentBuilders.Internal
         /// </summary>
         /// <param name="property">The expressions that accesses the property this node represents.</param>
         public IndexedBranchNode(IndexExpression property, RootNode root) 
-            : base(property.Indexer.PropertyType, root)
+            : base(property.Indexer!.PropertyType, root)
         {
             _property = property;
         }
 
+        /// <inheritdoc />
         protected override bool IsBuilderNode => !IsMutable;
 
         /// <inheritdoc />
@@ -37,11 +38,11 @@ namespace BitWiseBots.FluentBuilders.Internal
             {
                 var genMethod = BuildBuilderMethod.MakeGenericMethod(objectType);
                 var builderValue = genMethod.Invoke(this, new []{ value });
-                memberInfo.SetValue(objectToBuild, builderValue, indexerArguments);
+                memberInfo!.SetValue(objectToBuild, builderValue, indexerArguments);
             }
             else
             {                
-                memberInfo.SetValue(objectToBuild, value, indexerArguments);
+                memberInfo!.SetValue(objectToBuild, value, indexerArguments);
             }            
         }
     }

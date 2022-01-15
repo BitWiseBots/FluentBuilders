@@ -20,8 +20,7 @@ namespace BitWiseBots.FluentBuilders.Internal
         {
             var member = expression as MemberExpression;
             var unary = expression as UnaryExpression;
-            return member
-                ?? unary?.Operand as MemberExpression;
+            return member ?? unary?.Operand as MemberExpression;
         }
 
         /// <summary>

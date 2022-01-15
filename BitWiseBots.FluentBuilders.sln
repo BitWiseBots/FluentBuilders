@@ -14,7 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{45C36E02-A
 		.circleci\config.yml = .circleci\config.yml
 		LICENSE = LICENSE
 		README.md = README.md
-		docs\user-guide.md = docs\user-guide.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitWiseBots.FluentBuilders.Tests.Unit", "tests\BitWiseBots.FluentBuilders.Tests.Unit\BitWiseBots.FluentBuilders.Tests.Unit.csproj", "{0E1148FF-9208-4758-8962-35940A912DB6}"
