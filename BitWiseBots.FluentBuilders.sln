@@ -11,7 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7A88B9C8
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{45C36E02-A589-4258-BFA2-9AC441E1CE67}"
 	ProjectSection(SolutionItems) = preProject
-		.circleci\config.yml = .circleci\config.yml
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection

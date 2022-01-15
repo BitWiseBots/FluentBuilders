@@ -43,6 +43,7 @@ jobs:
             condition:
                equal: [main, << pipeline.git.branch >>]
             steps:
+              - checkout
               - run:
                     name: Push to NuGet
                     command: |
