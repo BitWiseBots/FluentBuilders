@@ -10,21 +10,21 @@ jobs:
       name: windows/default
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - dotnet-packages-v1-{{ checksum "src/BitWiseBots.FluentBuilders/BitWiseBots.FluentBuilders.csproj" }}
       - run:
-          name: "Run Application Tests"
-          command: dotnet.exe test -v n --results-directory:test_coverage --collect:"Code Coverage"
-      - save_cache:
-          paths:
-            - C:\Users\circleci\.nuget\packages
-          key: dotnet-packages-v1-{{ checksum "src/BitWiseBots.FluentBuilders/BitWiseBots.FluentBuilders.csproj" }}
+          name: "Run Unit Tests"
+          command: dotnet.exe test --logger "trx"
       - run:
-          name: "Print Working Directory"
-          command: pwd
+          name: test results
+          when: always
+          command: |
+              dotnet tool install -g trx2junit
+              export PATH="$PATH:/root/.dotnet/tools"
+              trx2junit tests/**/TestResults/*.trx
+      - store_test_results:
+          path: tests/TestResults
       - store_artifacts:
-          path: C:\Users\circleci\project\test_coverage
+          path: tests/TestResults
+          destination: TestResults
   build:
     description: Build application with Release configuration
     executor:
@@ -48,7 +48,7 @@ jobs:
                     name: Push to NuGet
                     command: |
                       dotnet pack --output artifacts --configuration Release
-                      dotnet nuget push artifacts/*.nupkg --api-key ${NUGET_API_KEY} --source ${NUGET_URL} 
+                      dotnet nuget push artifacts/*.nupkg -k ${NUGET_API_KEY} -s ${NUGET_URL} 
         - when:
             condition:
                not: 
