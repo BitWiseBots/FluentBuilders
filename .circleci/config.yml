@@ -1,0 +1,68 @@
+version: 2.1
+
+orbs:
+  windows: circleci/windows@2.4.1
+
+jobs:
+  test:
+    description: Setup and run unit tests
+    executor:
+      name: windows/default
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dotnet-packages-v1-{{ checksum "src/BitWiseBots.FluentBuilders/BitWiseBots.FluentBuilders.csproj" }}
+      - run:
+          name: "Run Application Tests"
+          command: dotnet.exe test -v n --results-directory:test_coverage --collect:"Code Coverage"
+      - save_cache:
+          paths:
+            - C:\Users\circleci\.nuget\packages
+          key: dotnet-packages-v1-{{ checksum "src/BitWiseBots.FluentBuilders/BitWiseBots.FluentBuilders.csproj" }}
+      - run:
+          name: "Print Working Directory"
+          command: pwd
+      - store_artifacts:
+          path: C:\Users\circleci\project\test_coverage
+  build:
+    description: Build application with Release configuration
+    executor:
+      name: windows/default
+    steps:
+      - checkout
+      - run:
+          name: "Build Application according to some given configuration"
+          command: dotnet.exe build --configuration Release /p:ContinuousIntegrationBuild=true
+  deploy:
+    description: Deploy the package to NuGet. Only run on the main branch.
+    executor:
+        name: windows/default
+    steps:
+        - when:
+            condition:
+               equal: [main, << pipeline.git.branch >>]
+            steps:
+              - run:
+                    name: Push to NuGet
+                    command: |
+                      dotnet pack --output artifacts --configuration Release
+                      dotnet nuget push --source "${NUGET_URL}" --api-key="${NUGET_API_KEY}" artifacts/*.nupkg  
+        - when:
+            condition:
+               not: 
+                equal: [main, << pipeline.git.branch >>]
+            steps:
+              - run: echo "Skipping deploy."
+
+
+workflows:
+  test_and_build:
+    jobs:
+      - test
+      - build:
+          requires:
+            - test
+      - deploy:
+          requires:
+            - build 

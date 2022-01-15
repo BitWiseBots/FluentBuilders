@@ -9,12 +9,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{117CC81B-DB0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7A88B9C8-ADC2-45AF-B90A-DC178CF5E94B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{45C36E02-A589-4258-BFA2-9AC441E1CE67}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{45C36E02-A589-4258-BFA2-9AC441E1CE67}"
 	ProjectSection(SolutionItems) = preProject
+		.circleci\config.yml = .circleci\config.yml
+		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitWiseBots.FluentBuilders.Tests.Unit", "tests\BitWiseBots.FluentBuilders.Tests.Unit\BitWiseBots.FluentBuilders.Tests.Unit.csproj", "{0E1148FF-9208-4758-8962-35940A912DB6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{6AAFB55F-2030-4523-90B5-3CA546F723D9}"
+	ProjectSection(SolutionItems) = preProject
+		.circleci\config.yml = .circleci\config.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

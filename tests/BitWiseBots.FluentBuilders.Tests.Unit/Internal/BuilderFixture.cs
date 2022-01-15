@@ -322,7 +322,7 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
             var result1 = builder.Build();
             var result2 = builder.Build();
 
-            Assert.NotEqual(result1.IntProperty, result2.IntProperty);
+            Assert.NotEqual(result1.NestedProperty.IntProperty, result2.NestedProperty.IntProperty);
         }
 
         [Fact]
