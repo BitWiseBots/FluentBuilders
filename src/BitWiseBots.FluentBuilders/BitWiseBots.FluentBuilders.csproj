@@ -5,7 +5,7 @@
       <IsPackable>true</IsPackable>
       <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
       <Company>BitWiseBots</Company>
-      <Authors>Justin Madill</Authors>
+      <Authors>BitWiseBots</Authors>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
       <DocumentationFile></DocumentationFile>
@@ -13,8 +13,43 @@
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
       <DocumentationFile></DocumentationFile>
     </PropertyGroup>
-    <ItemGroup>
+	<PropertyGroup>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<Copyright>© BitWiseBots 2022</Copyright>
+		<Description>A .NET Standard library that provides a generic builder pattern capable of creating simple to complex object graphs. Designed to be used for unit testing.</Description>
+		<PackageProjectUrl>https://github.com/BitWiseBots/FluentBuilders</PackageProjectUrl>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/BitWiseBots/FluentBuilders</RepositoryUrl>
+		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+		<PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+		<DebugType>embedded</DebugType>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+	</PropertyGroup>
+	<ItemGroup>
+	  <None Include="..\..\logo.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Include="..\..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+	<ItemGroup>
+      <PackageReference Include="GitVersion.MsBuild" Version="5.8.1">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="JetBrains.Annotations" Version="10.2.1" />
+      <PackageReference Include="Microsoft.SourceLink.Common" Version="1.1.1">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
