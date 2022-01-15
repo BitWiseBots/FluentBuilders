@@ -15,7 +15,7 @@
     </PropertyGroup>
 	<PropertyGroup>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<Copyright>© BitWiseBots 2022</Copyright>
+		<Copyright>BitWiseBots © 2022</Copyright>
 		<Description>A .NET Standard library that provides a generic builder pattern capable of creating simple to complex object graphs. Designed to be used for unit testing.</Description>
 		<PackageProjectUrl>https://github.com/BitWiseBots/FluentBuilders</PackageProjectUrl>
 		<PackageIcon>logo.png</PackageIcon>
@@ -44,7 +44,7 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" Condition="'$(Configuration)'=='Debug'" />
+      <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
       <PackageReference Include="Microsoft.SourceLink.Common" Version="1.1.1">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
