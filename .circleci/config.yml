@@ -47,7 +47,14 @@ jobs:
                     name: Push to NuGet
                     command: |
                       dotnet pack --output artifacts --configuration Release
-                      dotnet nuget push --source "${NUGET_URL}" --api-key="${NUGET_API_KEY}" artifacts/*.nupkg           
+                      dotnet nuget push --source "${NUGET_URL}" --api-key="${NUGET_API_KEY}" artifacts/*.nupkg  
+        - when:
+            condition:
+               not: 
+                equal: [main, << pipeline.git.branch >>]
+            steps:
+              - run: echo "Skipping deploy."
+
 
 workflows:
   test_and_build:
