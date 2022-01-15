@@ -4,15 +4,12 @@ orbs:
   windows: circleci/windows@2.4.1
 
 jobs:
-  BuildAndTest:
-    description: Build and Test
+  test:
+    description: Setup and run unit tests
     executor:
       name: windows/default
     steps:
       - checkout
-      - run:
-          name: "Build Application according to some given configuration"
-          command: dotnet.exe build --configuration Release /p:ContinuousIntegrationBuild=true
       - run:
           name: "Run Unit Tests"
           command: dotnet.exe test --logger "trx" --results-directory "TestResults" --no-build
@@ -32,6 +29,13 @@ jobs:
       - store_artifacts:
           path: TestResults
           destination: TestResults
+  build:
+    description: Build application with Release configuration
+    executor:
+      name: windows/default
+    steps:
+      - checkout
+      
   deploy:
     description: Deploy the package to NuGet. Only run on the main branch.
     executor:
@@ -46,7 +50,7 @@ jobs:
                     name: Push to NuGet
                     command: |
                       dotnet pack --output artifacts --configuration Release
-                      dotnet nuget push "artifacts/*.nupkg" -s "https://api.nuget.org/v3/index.json" -k $NUGET_API_KEY 
+                      dotnet nuget push "**/*.nupkg" -s "https://api.nuget.org/v3/index.json" -k $NUGET_API_KEY 
         - when:
             condition:
                not: 
@@ -54,10 +58,14 @@ jobs:
             steps:
               - run: echo "Skipping deploy."
 
+
 workflows:
   test_and_build:
     jobs:
-      - BuildAndTest
+      - test
+      - build:
+          requires:
+            - test
       - deploy:
           requires:
-            - BuildAndTest 
+            - build 
