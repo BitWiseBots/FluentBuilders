@@ -19,7 +19,6 @@
 		<Description>A .NET Standard library that provides a generic builder pattern capable of creating simple to complex object graphs. Designed to be used for unit testing.</Description>
 		<PackageProjectUrl>https://github.com/BitWiseBots/FluentBuilders</PackageProjectUrl>
 		<PackageIcon>logo.png</PackageIcon>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/BitWiseBots/FluentBuilders</RepositoryUrl>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
