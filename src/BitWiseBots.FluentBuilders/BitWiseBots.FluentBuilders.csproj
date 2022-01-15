@@ -21,14 +21,16 @@
 		<PackageIcon>logo.png</PackageIcon>
 		<RepositoryUrl>https://github.com/BitWiseBots/FluentBuilders</RepositoryUrl>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-		<PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
 		<DebugType>embedded</DebugType>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>F:\Workspaces\FluentBuilders\LICENSE</PackageLicenseFile>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Include="..\..\LICENSE" Link="LICENSE" />
 	  <None Include="..\..\logo.png">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
