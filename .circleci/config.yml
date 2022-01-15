@@ -47,7 +47,7 @@ jobs:
                     name: Push to NuGet
                     command: |
                       dotnet pack --output artifacts --configuration Release
-                      dotnet nuget push artifacts/*.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+                      dotnet nuget push "artifacts/*.nupkg" -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
         - when:
             condition:
                not: 
