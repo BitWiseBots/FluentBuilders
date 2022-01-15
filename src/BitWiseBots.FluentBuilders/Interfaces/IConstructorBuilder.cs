@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace BitWiseBots.FluentBuilders.Interfaces
 {
     /// <summary>
-    /// A secondary interface that allows for extracting values set using the <see cref="IBuilder{T}"/>.
+    /// A secondary interface that allows for extracting values set using the <see cref="Builder{T}"/>.
     /// </summary>
     /// <typeparam name="T">The type of object being built.</typeparam>
     public interface IConstructorBuilder<T> : IHideObjectMembers

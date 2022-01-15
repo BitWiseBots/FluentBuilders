@@ -19,7 +19,7 @@ namespace BitWiseBots.FluentBuilders
         private readonly Func<IConstructorBuilder<T>, T> _customConstructorFunc;
         private readonly Action<T> _customPostBuildAction;
 
-        private bool _isExecutingConstructorExpression = false;
+        private bool _isExecutingConstructorExpression;
 
         internal Builder(BuilderRegistrationStore builderRegistrationStore, Func<IConstructorBuilder<T>,T> customConstructorFunc, Action<T> customPostBuildAction)
         {
@@ -52,6 +52,7 @@ namespace BitWiseBots.FluentBuilders
         /// <typeparam name="T2">The type of the property being set.</typeparam>
         /// <param name="expression">An expression that accesses the property to be set.</param>
         /// <param name="value">The value to be set on the property.</param>
+        /// <param name="allowDefaults">Whether or not to use registered type defaults when <paramref name="value"/> is <c>default</c>.</param>
         public Builder<T> With<T2>(Expression<Func<T, T2>> expression, T2 value = default, bool allowDefaults = true)
         {
             var exprStack = ExtractExpressionStack(expression);
@@ -59,12 +60,12 @@ namespace BitWiseBots.FluentBuilders
             var currentNode = BuilderRootNode;
             while (exprStack.Count > 1)
             {
-                var poppedExpr = exprStack.Pop();
-                currentNode = currentNode.AddOrGetBranchNode(poppedExpr.Key, poppedExpr.Value);
+                var (childKey, childExpression) = exprStack.Pop();
+                currentNode = currentNode.AddOrGetBranchNode(childKey, childExpression);
             }
 
-            var expr = exprStack.Pop();
-            currentNode.AddOrGetValueNode<T2>(expr.Key, expr.Value, value, allowDefaults);
+            var (valueKey, valueExpression) = exprStack.Pop();
+            currentNode.AddOrGetValueNode<T2>(valueKey, valueExpression, value, allowDefaults);
             return this;
         }
 
@@ -98,6 +99,7 @@ namespace BitWiseBots.FluentBuilders
         /// <typeparam name="T2">The type of the property being set.</typeparam>
         /// <param name="expression">An expression that accesses the property to be set.</param>
         /// <param name="valueFunction">A function that returns a value to be set on the property</param>
+        /// <param name="allowDefaults">Whether or not to use registered type defaults when <paramref name="valueFunction"/> returns <c>default</c>.</param>
         public Builder<T> With<T2>(Expression<Func<T, T2>> expression, Func<IConstructorBuilder<T>, T2> valueFunction, bool allowDefaults = true)
         {
             var exprStack = ExtractExpressionStack(expression);
@@ -148,16 +150,12 @@ namespace BitWiseBots.FluentBuilders
                 }
             }
 
-            object value = defaultValue;
-            switch (currentNode)
+            var value = currentNode switch
             {
-                case BranchNode targetBranchNode:
-                    value = targetBranchNode.ApplyToConstructor();
-                    break;
-                case ValueNode targetValueNode:
-                    value = (T2)targetValueNode.Value;
-                    break;
-            }
+                BranchNode targetBranchNode => targetBranchNode.ApplyToConstructor(),
+                ValueNode targetValueNode => targetValueNode.Value,
+                _ => defaultValue
+            };
 
             foreach (var touchedNode in touchedNodes)
             {
@@ -169,10 +167,11 @@ namespace BitWiseBots.FluentBuilders
 
         /// <summary>
         /// Creates a new instance of <typeparamref name="T"/> either using <see cref="Activator"/> or a provided constructor expression.
+        /// Or if <paramref name="baseline"/> is provided, the builder config will be applied to the existing instance.
         /// </summary>
-        public T Build()
+        public T Build(T baseline = default)
         {
-            var builtObject = Create();
+            var builtObject = baseline ?? Create();
 
             BuilderRootNode.ApplyTo(builtObject);
 
@@ -191,7 +190,7 @@ namespace BitWiseBots.FluentBuilders
             var expr = expression.Body;
 
             // We know we've reached the top of the expression once the type is a ParameterExpression, i.e. (parameter) => ...
-            while (!(expr is ParameterExpression))
+            while (expr is not ParameterExpression)
             {
                 var memberExpr = expr.AsMemberExpression();
                 if (memberExpr != null)
@@ -206,7 +205,7 @@ namespace BitWiseBots.FluentBuilders
                 {
                     var indexArgs = indexExpr.GetIndexerArguments();
 
-                    exprStack.Push(new KeyValuePair<string, Expression>($"{indexExpr.Indexer.Name}[{string.Join(",", indexArgs)}]", indexExpr));
+                    exprStack.Push(new KeyValuePair<string, Expression>($"{indexExpr.Indexer!.Name}[{string.Join(",", indexArgs)}]", indexExpr));
 
                     expr = indexExpr.Object;
                     continue;

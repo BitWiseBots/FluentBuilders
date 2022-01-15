@@ -14,12 +14,17 @@ namespace BitWiseBots.FluentBuilders
         /// <summary>
         /// Store all the registrations in an <c>internal</c> collection to be collated by <see cref="Builders"/>
         /// </summary>
-        internal readonly Dictionary<string, Delegate> BuilderRegistrations = new Dictionary<string, Delegate>();
+        internal readonly Dictionary<string, Delegate> BuilderRegistrations = new();
 
         /// <summary>
         /// Store all the post build registrations in an <c>internal</c> collection to be collated by <see cref="Builders"/>
         /// </summary>
-        internal readonly Dictionary<string, Delegate> BuilderPostBuildRegistrations = new Dictionary<string, Delegate>();
+        internal readonly Dictionary<string, Delegate> BuilderPostBuildRegistrations = new();
+
+        /// <summary>
+        /// Store all the type default registrations in an <c>internal</c> collection to be collated by <see cref="Builders"/>
+        /// </summary>
+        internal readonly Dictionary<string, Delegate> TypeDefaultRegistrations = new();
 
         /// <summary>
         /// Adds a constructor function for a type to the list of registrations.
@@ -46,7 +51,7 @@ namespace BitWiseBots.FluentBuilders
         /// </summary>
         /// <typeparam name="T">The type of object that was built.</typeparam>
         /// <param name="postBuildAction">
-        /// An expression that produces performs additional work on the built <typeparamref name="T"/> instance after the builder is finished.
+        /// An expression that performs additional work on the built <typeparamref name="T"/> instance after the builder is finished.
         /// </param>
         [PublicAPI]
         protected void RegisterPostBuildAction<T>(Action<T> postBuildAction)
@@ -58,6 +63,25 @@ namespace BitWiseBots.FluentBuilders
             }
 
             BuilderPostBuildRegistrations[registrationKey] = postBuildAction;
+        }
+
+        /// <summary>
+        /// Adds a type default function for a type to the list of registrations.
+        /// </summary>
+        /// <typeparam name="T">The type to add a default value function for.</typeparam>
+        /// <param name="typeDefaultFunc">
+        /// An expression that produces an instance of type <typeparamref name="T"/> to be used when a property of type <typeparamref name="T"/> doesn't have a value specified.
+        /// </param>
+        [PublicAPI]
+        protected void RegisterTypeDefaultFunc<T>(Func<T> typeDefaultFunc)
+        {
+            var registrationKey = typeof(T).GetRegistrationKey();
+            if (TypeDefaultRegistrations.ContainsKey(registrationKey))
+            {
+                throw new BuildConfigurationException($"A type default function has already been registered for type '{registrationKey}'");
+            }
+
+            TypeDefaultRegistrations[registrationKey] = typeDefaultFunc;
         }
     }
 }

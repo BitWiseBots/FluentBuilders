@@ -13,7 +13,7 @@ namespace BitWiseBots.FluentBuilders
     /// </summary>
     public static class Builders
     {
-        private static readonly Lazy<BuilderRegistrationStore> StoreInitializer = new Lazy<BuilderRegistrationStore>();
+        private static readonly Lazy<BuilderRegistrationStore> StoreInitializer = new();
 
         internal static BuilderRegistrationStore BuilderRegistrationStore => StoreInitializer.Value;
 
@@ -152,14 +152,19 @@ namespace BitWiseBots.FluentBuilders
         /// </summary>
         private static void AppendBuilderRegistrations(BuilderRegistration builderRegistration)
         {
-            foreach (var registration in builderRegistration.BuilderRegistrations)
+            foreach (var (key, value) in builderRegistration.BuilderRegistrations)
             {
-                BuilderRegistrationStore.AddConstructorRegistration(registration.Key, registration.Value);
+                BuilderRegistrationStore.AddConstructorRegistration(key, value);
             }
 
-            foreach (var registration in builderRegistration.BuilderPostBuildRegistrations)
+            foreach (var (key, value) in builderRegistration.BuilderPostBuildRegistrations)
             {
-                BuilderRegistrationStore.AddPostBuildRegistration(registration.Key, registration.Value);
+                BuilderRegistrationStore.AddPostBuildRegistration(key, value);
+            }
+
+            foreach (var (key, value) in builderRegistration.TypeDefaultRegistrations)
+            {
+                BuilderRegistrationStore.AddTypeDefaultRegistration(key, value);
             }
         }
     }

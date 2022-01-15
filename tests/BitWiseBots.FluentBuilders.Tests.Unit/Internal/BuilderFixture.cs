@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BitWiseBots.FluentBuilders.Interfaces;
 using BitWiseBots.FluentBuilders.Internal;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Xunit;
 // The following rules are disabled as a result of items only used via reflection.
 // ReSharper disable NonReadonlyMemberInGetHashCode
@@ -26,9 +27,14 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
             _builderRegistrationStore.AddPostBuildRegistration(typeof(T).GetRegistrationKey(), action);
         }
 
-        internal Builder<T> Create<T>()
+        internal void AddTypeDefaultRegistration<T>(Func<T> func)
         {
-            return new Builder<T>(_builderRegistrationStore, null, null);
+            _builderRegistrationStore.AddTypeDefaultRegistration(typeof(T).GetRegistrationKey(), func);
+        }
+
+        internal Builder<T> Create<T>(Func<IConstructorBuilder<T>, T> customConstructorFunc = null, Action<T> customPostBuildAction = null)
+        {
+            return new Builder<T>(_builderRegistrationStore, customConstructorFunc, customPostBuildAction);
         }
 
 #region Mutable With Tests
@@ -294,7 +300,77 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
         }
 
         [Fact]
-        public void Build_ShouldCallPostBuildAction_WhenTypeIsMutable()
+        public void WithValueFunc_ShouldCallFuncForEachCallToBuild()
+        {
+            var i = 0;
+            var builder = Create<TestableMutableObject>();
+            builder.With(b => b.IntProperty, () => i++);
+
+            var result1 = builder.Build();
+            var result2 = builder.Build();
+
+            Assert.NotEqual(result1.IntProperty, result2.IntProperty);
+        }
+
+        [Fact]
+        public void WithValueFunc_ShouldCallFuncForEachCallToBuild_WhenNestedWithProvided()
+        {
+            var i = 0;
+            var builder = Create<TestableMutableObject>();
+            builder.With(b => b.NestedProperty.IntProperty, () => i++);
+
+            var result1 = builder.Build();
+            var result2 = builder.Build();
+
+            Assert.NotEqual(result1.IntProperty, result2.IntProperty);
+        }
+
+        [Fact]
+        public void Build_ShouldUseRegisteredConstructorFunc_WhenTypeIsMutable()
+        {
+            AddBuilderRegistration<TestableMutableObject>(b => new TestableMutableObject{SingleProperty = "someValue" });
+            var builder = Create<TestableMutableObject>();
+
+            var result = builder.Build();
+
+            Assert.Equal("someValue", result.SingleProperty);
+        }
+
+        [Fact]
+        public void Build_ShouldUseCustomConstructorFunc_WhenTypeIsMutable()
+        {
+            AddBuilderRegistration<TestableMutableObject>(b => new TestableMutableObject { SingleProperty = "someValue" });
+            var builder = Create<TestableMutableObject>(b => new TestableMutableObject{SingleProperty = "someOtherValue"});
+
+            var result = builder.Build();
+
+            Assert.Equal("someOtherValue", result.SingleProperty);
+        }
+
+        [Fact]
+        public void Build_ShouldUseRegisteredTypeDefault_WhenTypeIsMutable()
+        {
+            AddTypeDefaultRegistration(() => 5);
+            var builder = Create<TestableMutableObject>();
+
+            var result = builder.With(b => b.IntProperty).Build();
+
+            Assert.Equal(5, result.IntProperty);
+        }
+
+        [Fact]
+        public void Build_ShouldUseRegisteredTypeDefault_WhenTypeIsMutableAndDefaultIsComplexType()
+        {
+            AddTypeDefaultRegistration(() => new TestableMutableObject{SingleProperty = "someValue"});
+            var builder = Create<TestableMutableObject>();
+
+            var result = builder.With(b => b.NestedProperty).Build();
+
+            Assert.Equal("someValue", result.NestedProperty.SingleProperty);
+        }
+
+        [Fact]
+        public void Build_ShouldUseRegisteredPostBuildAction_WhenTypeIsMutable()
         {
             var wasCalled = false;
             AddPostBuildRegistration<TestableMutableObject>(o => wasCalled = true);
@@ -305,9 +381,23 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
             Assert.True(wasCalled);
         }
 
+        [Fact]
+        public void Build_ShouldUseCustomRegisteredPostBuildAction_WhenTypeIsMutable()
+        {
+            var registeredWasCalled = false;
+            var customWasCalled = false;
+            AddPostBuildRegistration<TestableMutableObject>(o => registeredWasCalled = true);
+            var builder = Create<TestableMutableObject>(customPostBuildAction: o => customWasCalled = true);
+
+            builder.Build();
+
+            Assert.True(customWasCalled);
+            Assert.False(registeredWasCalled);
+        }
+
         #endregion
 
-#region Immutable With Tests
+        #region Immutable With Tests
 
         [Fact]
         public void Build_ShouldThrowBuildConfigurationException_WhenImmutableObjectHasNoConstructorRegistered()
@@ -370,7 +460,7 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
 
             var builder = Create<TestableImmutableObject>();
 
-            builder.With(o => o.ImmutableNestedProperty.ImmutableNestedProperty, Create<TestableImmutableObject>().Build);
+            builder.With(o => o.ImmutableNestedProperty.ImmutableNestedProperty, Create<TestableImmutableObject>().Build());
             builder.With(o => o.IntProperty, () => 25);
             var result = builder.Build();
 

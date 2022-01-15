@@ -23,7 +23,7 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
         [Fact]
         public void Create_ShouldReturnNewBuilder_WhenConstructorRegistrationExists()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(true, false));
+            Builders.AddBuilderRegistration(new TestableBuilderRegistration(true, false, false));
 
             var builder = Builders.Create<TestableClass>();
             var result = builder.Build();
@@ -34,12 +34,23 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
         [Fact]
         public void Create_ShouldReturnNewBuilder_WhenPostBuildRegistrationExists()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, true));
+            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, true, false));
 
             var builder = Builders.Create<TestableClass>();
             var result = builder.Build();
 
             Assert.Equal("someString", result.Property);
+        }
+
+        [Fact]
+        public void Create_ShouldReturnNewBuilder_WhenTypeDefaultRegistrationExistsAndWithForTypeProvided()
+        {
+            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, false, true));
+
+            var builder = Builders.Create<TestableClass>();
+            var result = builder.With(b => b.GuidProperty).Build();
+
+            Assert.NotEqual(Guid.Empty, result.GuidProperty);
         }
 
         [Fact]
@@ -134,7 +145,7 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
         [Fact]
         public void GetConstructorFunc_ShouldReturnFunc_WhenRegistrationExists()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(true, false));
+            Builders.AddBuilderRegistration(new TestableBuilderRegistration(true, false, false));
 
             var result = Builders.BuilderRegistrationStore.GetConstructorFunc<TestableClass>();
 
@@ -152,7 +163,7 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
         [Fact]
         public void GetPostBuildAction_ShouldReturnAction_WhenRegistrationExists()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, true));
+            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, true, false));
 
             var result = Builders.BuilderRegistrationStore.GetPostBuildAction<TestableClass>();
 
@@ -170,36 +181,49 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
         [Fact]
         public void AddBuilderRegistration_ShouldThrowError_WhenSingleRegistrationAddsMultipleConstructorRegistrationsForSameType()
         {
-            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new BadTestableBuilderRegistration(true, false)));
+            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new BadTestableBuilderRegistration(true, false, false)));
         }
 
         [Fact]
         public void AddBuilderRegistration_ShouldThrowError_WhenSingleRegistrationAddsMultiplePostBuildActionRegistrationsForSameType()
         {
-            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new BadTestableBuilderRegistration(false, true)));
+            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new BadTestableBuilderRegistration(false, true, false)));
+        }
+
+        [Fact]
+        public void AddBuilderRegistration_ShouldThrowError_WhenSingleRegistrationAddsMultipleTypeDefaultRegistrationsForSameType()
+        {
+            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new BadTestableBuilderRegistration(false, false, true)));
         }
 
         [Fact]
         public void AddBuilderRegistration_ShouldThrowError_WhenMultipleRegistrationAddsSameConstructorRegistrations()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(true, false));
-            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new TestableBuilderRegistration(true, false)));
+            Builders.AddBuilderRegistration(new TestableBuilderRegistration(true, false, false));
+            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new TestableBuilderRegistration(true, false, false)));
         }
 
         [Fact]
         public void AddBuilderRegistration_ShouldThrowError_WhenMultipleRegistrationAddsSamePostBuildActionRegistrations()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, true));
-            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, true)));
+            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, true, false));
+            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, true, false)));
+        }
+
+        [Fact]
+        public void AddBuilderRegistration_ShouldThrowError_WhenMultipleRegistrationAddsSameTypeDefaultRegistrations()
+        {
+            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, false, true));
+            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, false, true)));
         }
 
         private class TestableBuilderRegistration : BuilderRegistration
         {
-            public TestableBuilderRegistration() : this(true, true)
+            public TestableBuilderRegistration() : this(true, true, true)
             {
             }
 
-            public TestableBuilderRegistration(bool shouldRegisterConstructor, bool shouldRegisterPostBuild)
+            public TestableBuilderRegistration(bool shouldRegisterConstructor, bool shouldRegisterPostBuild, bool shouldRegisterTypeDefaults)
             {
                 if (shouldRegisterConstructor)
                 {
@@ -209,6 +233,11 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
                 if (shouldRegisterPostBuild)
                 {
                     RegisterPostBuildAction<TestableClass>(c => c.Property = "someString");
+                }
+
+                if (shouldRegisterTypeDefaults)
+                {
+                    RegisterTypeDefaultFunc(Guid.NewGuid);
                 }
             }
         }
@@ -217,11 +246,11 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
         {
             // This constructor gets used via reflection
             // ReSharper disable once UnusedMember.Local
-            public BadTestableBuilderRegistration() : this(false, false)
+            public BadTestableBuilderRegistration() : this(false, false, false)
             {
             }
 
-            public BadTestableBuilderRegistration(bool shouldRegisterConstructor, bool shouldRegisterPostBuild)
+            public BadTestableBuilderRegistration(bool shouldRegisterConstructor, bool shouldRegisterPostBuild, bool shouldRegisterTypeDefaults)
             {
                 if (shouldRegisterConstructor)
                 {
@@ -234,12 +263,20 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
                     RegisterPostBuildAction<TestableClass>(c => c.Property = "someString");
                     RegisterPostBuildAction<TestableClass>(c => c.Property = "someString");
                 }
+
+                if (shouldRegisterTypeDefaults)
+                {
+                    RegisterTypeDefaultFunc(() => new TestableClass());
+                    RegisterTypeDefaultFunc(() => new TestableClass());
+                }
             }
         }
 
         private class TestableClass
         {
             public string Property { get; set; }
+
+            public Guid GuidProperty { get; set; }
         }
     }
 }

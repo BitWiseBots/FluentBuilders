@@ -14,12 +14,14 @@ namespace BitWiseBots.FluentBuilders.Internal
         /// Constructs a new <see cref="MemberBranchNode"/>.
         /// </summary>
         /// <param name="property">The expression that accesses the property this node represents.</param>
+        /// <param name="root"></param>
         public MemberBranchNode(MemberExpression property, RootNode root) 
             : base(((PropertyInfo)property.Member).PropertyType, root)
         {
             _property = property;
         }
 
+        /// <inheritdoc />
         protected override bool IsBuilderNode => !IsMutable;
 
         /// <inheritdoc />
