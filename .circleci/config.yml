@@ -17,7 +17,7 @@ jobs:
           name: "Run Test Coverage"
           command: |
               dotnet tool install JetBrains.dotCover.GlobalTool -g
-              dotnet dotcover test --dcReportType=XML --dcOutput=TestResults\coverage.xml --no-build
+              dotnet dotcover test --dcReportType=HTML --dcOutput=TestResults\coverage.html --no-build
       - run:
           name: "Upload Test Results"
           when: always
