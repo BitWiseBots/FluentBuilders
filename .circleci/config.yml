@@ -12,7 +12,7 @@ jobs:
       - checkout
       - run:
           name: "Run Unit Tests"
-          command: dotnet.exe test --logger "trx" --results-directory "TestResults" --no-build
+          command: dotnet.exe test --logger "trx" --results-directory "TestResults"
       - run:
           name: "Run Test Coverage"
           command: |
