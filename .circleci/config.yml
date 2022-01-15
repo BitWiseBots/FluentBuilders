@@ -57,12 +57,14 @@ workflows:
   test_and_build:
     jobs:
       - test:
-          branches:
-            ignore:
+          filters:
+            branches:
+              ignore:
                 - gh-pages
       - buildAndDeploy:
-          branches:
-            ignore:
+          filters:
+            branches:
+              ignore:
                 - gh-pages
           requires:
             - test
