@@ -29,19 +29,13 @@ jobs:
       - store_artifacts:
           path: TestResults
           destination: TestResults
-  build:
-    description: Build application with Release configuration
+  buildAndDeploy:
+    description: Build and Deploy library with Release configuration
     executor:
       name: windows/default
     steps:
       - checkout
-      
-  deploy:
-    description: Deploy the package to NuGet. Only run on the main branch.
-    executor:
-        name: windows/default
-    steps:
-        - when:
+      - when:
             condition:
                equal: [main, << pipeline.git.branch >>]
             steps:
@@ -49,23 +43,21 @@ jobs:
               - run:
                     name: Push to NuGet
                     command: |
-                      dotnet pack --output artifacts --configuration Release
+                      dotnet pack --output artifacts --configuration Release /p:ContinuousIntegrationBuild=true
                       dotnet nuget push "**/*.nupkg" -s "https://api.nuget.org/v3/index.json" --api-key "$env:NUGET_API_KEY"
-        - when:
+      - when:
             condition:
                not: 
                 equal: [main, << pipeline.git.branch >>]
             steps:
-              - run: echo "Skipping deploy."
-
+              - run:
+                  name: Build
+                  command: dotnet build --configuration Release /p:ContinuousIntegrationBuild=true 
 
 workflows:
   test_and_build:
     jobs:
       - test
-      - build:
+      - buildAndDeploy:
           requires:
             - test
-      - deploy:
-          requires:
-            - build 
