@@ -27,10 +27,15 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageLicenseFile>F:\Workspaces\FluentBuilders\LICENSE</PackageLicenseFile>
+		<PackageLicenseFile>F:\Workspaces\FluentBuilders\src\BitWiseBots.FluentBuilders\LICENSE</PackageLicenseFile>
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Include="..\..\LICENSE" Link="LICENSE" />
+	  <None Remove="LICENSE" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="LICENSE" />
+	</ItemGroup>
+	<ItemGroup>
 	  <None Include="..\..\logo.png">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
