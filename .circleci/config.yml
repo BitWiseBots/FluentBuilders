@@ -20,9 +20,9 @@ jobs:
               dotnet tool install -g trx2junit
               trx2junit TestResults/*.trx
       - store_test_results:
-          path: tests/TestResults
+          path: TestResults
       - store_artifacts:
-          path: tests/TestResults
+          path: TestResults
           destination: TestResults
   build:
     description: Build application with Release configuration
