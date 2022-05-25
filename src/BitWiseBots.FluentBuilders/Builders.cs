@@ -18,37 +18,37 @@ namespace BitWiseBots.FluentBuilders
         internal static ConfigStore ConfigStore => StoreInitializer.Value;
 
         /// <summary>
-        /// Instantiates an instance of <typeparamref name="TBuilderConfig"/> and calls <see cref="AddConfig(BitWiseBots.FluentBuilders.BuildConfig)"/>
+        /// Instantiates an instance of <typeparamref name="TBuilderConfig"/> and calls <see cref="AddConfig(BuilderConfig)"/>
         /// </summary>
-        /// <typeparam name="TBuilderConfig">A type inheriting from <see cref="BuildConfig"/>.</typeparam>
+        /// <typeparam name="TBuilderConfig">A type inheriting from <see cref="BuilderConfig"/>.</typeparam>
         [PublicAPI]
-        public static void AddConfig<TBuilderConfig>() where TBuilderConfig : BuildConfig, new()
+        public static void AddConfig<TBuilderConfig>() where TBuilderConfig : BuilderConfig, new()
         {
             AddConfig(new TBuilderConfig());
         }
 
         /// <summary>
-        /// Instantiates an instance of <paramref name="configType"/> and calls <see cref="AddConfig(BitWiseBots.FluentBuilders.BuildConfig)"/>
+        /// Instantiates an instance of <paramref name="configType"/> and calls <see cref="AddConfig(BuilderConfig)"/>
         /// </summary>
-        /// <param name="configType">A type inheriting from <see cref="BuildConfig"/>.</param>
-        /// <exception cref="InvalidCastException">When the provided type does not inherit <see cref="BuildConfig"/>.</exception>
+        /// <param name="configType">A type inheriting from <see cref="BuilderConfig"/>.</param>
+        /// <exception cref="InvalidCastException">When the provided type does not inherit <see cref="BuilderConfig"/>.</exception>
         [PublicAPI]
         public static void AddConfig(Type configType)
         {
-            AddConfig((BuildConfig)Activator.CreateInstance(configType));
+            AddConfig((BuilderConfig)Activator.CreateInstance(configType));
         }
 
         /// <summary>
-        /// Stores the the provided <see cref="BuildConfig"/> in a static collection to be provided to new <see cref="Builder{T}"/> instances.
+        /// Stores the the provided <see cref="BuilderConfig"/> in a static collection to be provided to new <see cref="Builder{T}"/> instances.
         /// </summary>
         [PublicAPI]
-        public static void AddConfig(BuildConfig builderConfig)
+        public static void AddConfig(BuilderConfig builderConfig)
         {
             AppendConfigs(builderConfig);
         }
 
         /// <summary>
-        /// Scans the provided assemblies for implementations of <see cref="BuildConfig"/> and stores them in a static collection to be provided to new <see cref="Builder{T}"/> instances.
+        /// Scans the provided assemblies for implementations of <see cref="BuilderConfig"/> and stores them in a static collection to be provided to new <see cref="Builder{T}"/> instances.
         /// </summary>
         /// <param name="assembliesToScan">
         /// The assemblies to be scanned, as few as possible assemblies should be provided. IE. don't use <c>AppDomain.CurrentDomain.GetAssemblies()</c> or similar.
@@ -60,7 +60,7 @@ namespace BitWiseBots.FluentBuilders
         }
 
         /// <summary>
-        /// Scans the provided assemblies for implementations of <see cref="BuildConfig"/>  and stores them in a static collection to be provided to new <see cref="Builder{T}"/> instances.
+        /// Scans the provided assemblies for implementations of <see cref="BuilderConfig"/>  and stores them in a static collection to be provided to new <see cref="Builder{T}"/> instances.
         /// </summary>
         /// <param name="assembliesToScan">
         /// The assemblies to be scanned, as few as possible assemblies should be provided. IE. don't use <c>AppDomain.CurrentDomain.GetAssemblies()</c> or similar.
@@ -72,7 +72,7 @@ namespace BitWiseBots.FluentBuilders
         }
 
         /// <summary>
-        /// Loads and scans the assemblies with the provided names for implementations of <see cref="BuildConfig"/> and stores them in a static collection to be provided to new <see cref="Builder{T}"/> instances.
+        /// Loads and scans the assemblies with the provided names for implementations of <see cref="BuilderConfig"/> and stores them in a static collection to be provided to new <see cref="Builder{T}"/> instances.
         /// </summary>
         /// <param name="assemblyNamesToScan">
         /// The assemblies names to be loaded and scanned.
@@ -84,7 +84,7 @@ namespace BitWiseBots.FluentBuilders
         }
 
         /// <summary>
-        /// Loads and scans the assemblies with the provided names for implementations of <see cref="BuildConfig"/> and stores them in a static collection to be provided to new <see cref="Builder{T}"/> instances.
+        /// Loads and scans the assemblies with the provided names for implementations of <see cref="BuilderConfig"/> and stores them in a static collection to be provided to new <see cref="Builder{T}"/> instances.
         /// </summary>
         /// <param name="assemblyNamesToScan">
         /// The assemblies names to be loaded and scanned.
@@ -96,7 +96,7 @@ namespace BitWiseBots.FluentBuilders
         }
 
         /// <summary>
-        /// Scans the assemblies of the provided types for implementations of <see cref="BuildConfig"/> and stores them in a static collection to be provided to new <see cref="Builder{T}"/> instances.
+        /// Scans the assemblies of the provided types for implementations of <see cref="BuilderConfig"/> and stores them in a static collection to be provided to new <see cref="Builder{T}"/> instances.
         /// </summary>
         /// <param name="typesFromAssembliesContainingConfigs">
         /// The types whose assemblies should be scanned.
@@ -108,7 +108,7 @@ namespace BitWiseBots.FluentBuilders
         }
 
         /// <summary>
-        /// Scans the assemblies of the provided types for implementations of <see cref="BuildConfig"/> and stores them in a static collection to be provided to new <see cref="Builder{T}"/> instances.
+        /// Scans the assemblies of the provided types for implementations of <see cref="BuilderConfig"/> and stores them in a static collection to be provided to new <see cref="Builder{T}"/> instances.
         /// </summary>
         /// <param name="typesFromAssembliesContainingConfigs">
         /// The types whose assemblies should be scanned.
@@ -130,14 +130,14 @@ namespace BitWiseBots.FluentBuilders
         }
 
         /// <summary>
-        /// Scans the provided assemblies for types inheriting from <see cref="BuildConfig"/> and calls <see cref="AddConfig"/>.
+        /// Scans the provided assemblies for types inheriting from <see cref="BuilderConfig"/> and calls <see cref="AddConfig"/>.
         /// </summary>
         /// <param name="assembliesToScan">The assemblies to be scanned.</param>
         private static void AddConfigsFromAssemblies(IEnumerable<Assembly> assembliesToScan)
         {
             var allTypes = assembliesToScan.Where(a => !a.IsDynamic).SelectMany(a => a.DefinedTypes);
 
-            var configs = allTypes.Where(t => typeof(BuildConfig).GetTypeInfo().IsAssignableFrom(t))
+            var configs = allTypes.Where(t => typeof(BuilderConfig).GetTypeInfo().IsAssignableFrom(t))
                 .Where(t => !t.IsAbstract)
                 .Select(t => t.AsType());
 
@@ -150,7 +150,7 @@ namespace BitWiseBots.FluentBuilders
         /// <summary>
         /// Adds the provided configs to the <see cref="ConfigStore"/>.
         /// </summary>
-        private static void AppendConfigs(BuildConfig builderConfig)
+        private static void AppendConfigs(BuilderConfig builderConfig)
         {
             foreach (var (key, value) in builderConfig.Constructors)
             {

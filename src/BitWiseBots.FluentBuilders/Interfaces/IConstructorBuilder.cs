@@ -11,7 +11,7 @@ namespace BitWiseBots.FluentBuilders.Interfaces
     public interface IConstructorBuilder<T> : IHideObjectMembers
     {
         /// <summary>
-        /// Use this method within an implementation of <see cref="BuildConfig"/> to use values set using any of the <see cref="M:With"/> overloads within the constructor expression.
+        /// Use this method within an implementation of <see cref="BuilderConfig"/> to use values set using any of the <see cref="M:With"/> overloads within the constructor expression.
         /// </summary>
         /// <typeparam name="T2">The type of the property being accessed.</typeparam>
         /// <param name="expression">An expression that specifies which property is being set within the constructor.</param>
@@ -20,7 +20,7 @@ namespace BitWiseBots.FluentBuilders.Interfaces
         T2 From<T2>(Expression<Func<T, T2>> expression);
 
         /// <summary>
-        /// Use this method within an implementation of <see cref="BuildConfig"/> to use values set using any of the <see cref="M:With"/> overloads within the constructor expression.
+        /// Use this method within an implementation of <see cref="BuilderConfig"/> to use values set using any of the <see cref="M:With"/> overloads within the constructor expression.
         /// </summary>
         /// <typeparam name="T2">The type of the property being accessed.</typeparam>
         /// <param name="expression">An expression that specifies which property is being set within the constructor.</param>
@@ -30,7 +30,7 @@ namespace BitWiseBots.FluentBuilders.Interfaces
         T2 From<T2>(Expression<Func<T, T2>> expression, Builder<T2> defaultValueBuilder);
 
         /// <summary>
-        /// Use this method within an implementation of <see cref="BuildConfig"/> to use values set using any of the <see cref="M:With"/> overloads within the constructor expression.
+        /// Use this method within an implementation of <see cref="BuilderConfig"/> to use values set using any of the <see cref="M:With"/> overloads within the constructor expression.
         /// </summary>
         /// <typeparam name="T2">The type of the property being accessed.</typeparam>
         /// <param name="expression">An expression that specifies which property is being set within the constructor.</param>

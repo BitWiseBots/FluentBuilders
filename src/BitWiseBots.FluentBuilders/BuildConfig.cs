@@ -9,7 +9,7 @@ namespace BitWiseBots.FluentBuilders
     /// <summary>
     /// Provides the base functionality for adding constructors, post builds, and type defaults to be used by <see cref="Builders"/> when creating new <see cref="Builder{T}"/>.
     /// </summary>
-    public abstract class BuildConfig : IHideObjectMembers
+    public abstract class BuilderConfig : IHideObjectMembers
     {
         /// <summary>
         /// Store all the constructor functions in an <c>internal</c> collection to be collated by <see cref="Builders"/>

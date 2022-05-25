@@ -217,7 +217,7 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
             Assert.Throws<BuildConfigurationException>(() => Builders.AddConfig(new TestableBuilderConfig(false, false, true)));
         }
 
-        private class TestableBuilderConfig : BuildConfig
+        private class TestableBuilderConfig : BuilderConfig
         {
             public TestableBuilderConfig() : this(true, true, true)
             {
@@ -242,7 +242,7 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
             }
         }
 
-        private class BadTestableBuilderConfig : BuildConfig
+        private class BadTestableBuilderConfig : BuilderConfig
         {
             // This constructor gets used via reflection
             // ReSharper disable once UnusedMember.Local
