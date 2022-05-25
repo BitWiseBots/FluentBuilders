@@ -71,7 +71,7 @@ namespace BitWiseBots.FluentBuilders.Internal
         }
 
         /// <summary>
-        /// Runs the <see cref="ApplyTo"/> logic for when nodes are used by a registered constructor function.
+        /// Runs the <see cref="ApplyTo"/> logic for when nodes are used by a stored constructor function.
         /// </summary>
         /// <returns>The constructed valueFunc for this node with all child nodes already processed.</returns>
         public object ApplyToConstructor()
@@ -198,7 +198,7 @@ namespace BitWiseBots.FluentBuilders.Internal
 
             var builderType = typeof(Builder<>);
             var genBuilderType = builderType.MakeGenericType(NodeType);
-            return Activator.CreateInstance(genBuilderType, BindingFlags.NonPublic | BindingFlags.Instance, null, new object[]{Root.BuilderRegistrationStore, null, null}, null);
+            return Activator.CreateInstance(genBuilderType, BindingFlags.NonPublic | BindingFlags.Instance, null, new object[]{Root.ConfigStore, null, null}, null);
         }
 
         /// <summary>

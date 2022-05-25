@@ -7,10 +7,10 @@ namespace BitWiseBots.FluentBuilders.Internal
     /// </summary>
     internal sealed class RootNode : BranchNode
     {
-        public RootNode(object sourceBuilder, BuilderRegistrationStore registrationStore, Type nodeType ) : base(nodeType, null)
+        public RootNode(object sourceBuilder, ConfigStore configStore, Type nodeType ) : base(nodeType, null)
         {
             SourceBuilder = sourceBuilder;
-            BuilderRegistrationStore = registrationStore;
+            ConfigStore = configStore;
         }
 
         /// <summary>
@@ -19,9 +19,9 @@ namespace BitWiseBots.FluentBuilders.Internal
         public object SourceBuilder { get; }
 
         /// <summary>
-        /// A reference to the currently configured <see cref="BuilderRegistrationStore"/> to allow access to the various registrations when building.
+        /// A reference to the current <see cref="ConfigStore"/> to allow access to the various configs when building.
         /// </summary>
-        public BuilderRegistrationStore BuilderRegistrationStore { get; }
+        public ConfigStore ConfigStore { get; }
 
         /// <inheritdoc />
         public override RootNode Root => this;

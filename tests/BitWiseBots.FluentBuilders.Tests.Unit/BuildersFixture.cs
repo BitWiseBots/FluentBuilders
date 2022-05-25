@@ -9,11 +9,11 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
     {
         public BuildersFixture()
         {
-            Builders.BuilderRegistrationStore.ClearRegistrations();
+            Builders.ConfigStore.Clear();
         }
 
         [Fact]
-        public void Create_ShouldReturnNewBuilder_WhenNoRegistrationExists()
+        public void Create_ShouldReturnNewBuilder_WhenNoConfigsExists()
         {
             var result = Builders.Create<TestableClass>();
 
@@ -21,9 +21,9 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
         }
 
         [Fact]
-        public void Create_ShouldReturnNewBuilder_WhenConstructorRegistrationExists()
+        public void Create_ShouldReturnNewBuilder_WhenConstructorConfigExists()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(true, false, false));
+            Builders.AddConfig(new TestableBuilderConfig(true, false, false));
 
             var builder = Builders.Create<TestableClass>();
             var result = builder.Build();
@@ -32,9 +32,9 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
         }
 
         [Fact]
-        public void Create_ShouldReturnNewBuilder_WhenPostBuildRegistrationExists()
+        public void Create_ShouldReturnNewBuilder_WhenPostBuildConfigExists()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, true, false));
+            Builders.AddConfig(new TestableBuilderConfig(false, true, false));
 
             var builder = Builders.Create<TestableClass>();
             var result = builder.Build();
@@ -43,9 +43,9 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
         }
 
         [Fact]
-        public void Create_ShouldReturnNewBuilder_WhenTypeDefaultRegistrationExistsAndWithForTypeProvided()
+        public void Create_ShouldReturnNewBuilder_WhenTypeDefaultConfigExistsAndWithForTypeProvided()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, false, true));
+            Builders.AddConfig(new TestableBuilderConfig(false, false, true));
 
             var builder = Builders.Create<TestableClass>();
             var result = builder.With(b => b.GuidProperty).Build();
@@ -54,220 +54,220 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit
         }
 
         [Fact]
-        public void AddBuilderRegistrationT_ShouldAddBuilderRegistrations()
+        public void AddConfigT_ShouldAddConfigs()
         {
-            Builders.AddBuilderRegistration<TestableBuilderRegistration>();
+            Builders.AddConfig<TestableBuilderConfig>();
 
-            Assert.Single(Builders.BuilderRegistrationStore.ConstructorRegistrations);
-            Assert.Single(Builders.BuilderRegistrationStore.PostBuildRegistrations);
+            Assert.Single(Builders.ConfigStore.Constructors);
+            Assert.Single(Builders.ConfigStore.PostBuilds);
         }
 
         [Fact]
-        public void AddBuilderRegistrationType_ShouldAddBuilderRegistrations()
+        public void AddConfigType_ShouldAddBuilderConfigs()
         {
-            Builders.AddBuilderRegistration(typeof(TestableBuilderRegistration));
+            Builders.AddConfig(typeof(TestableBuilderConfig));
 
-            Assert.Single(Builders.BuilderRegistrationStore.ConstructorRegistrations);
-            Assert.Single(Builders.BuilderRegistrationStore.PostBuildRegistrations);
+            Assert.Single(Builders.ConfigStore.Constructors);
+            Assert.Single(Builders.ConfigStore.PostBuilds);
         }
 
         [Fact]
-        public void AddBuilderRegistration_ShouldAddBuilderRegistration()
+        public void AddConfig_ShouldAddConfigs()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration());
+            Builders.AddConfig(new TestableBuilderConfig());
 
-            Assert.Single(Builders.BuilderRegistrationStore.ConstructorRegistrations);
-            Assert.Single(Builders.BuilderRegistrationStore.PostBuildRegistrations);
+            Assert.Single(Builders.ConfigStore.Constructors);
+            Assert.Single(Builders.ConfigStore.PostBuilds);
         }
 
         [Fact]
-        public void AddBuilderRegistrationsAssemblyIEnumerable_ShouldFindImplementationInAssemblyAndExecute()
+        public void AddConfigsIEnumerable_ShouldFindImplementationInAssemblyAndExecute()
         {
-            Builders.AddBuilderRegistrations(new List<Assembly> { Assembly.GetAssembly(typeof(TestableBuilderRegistration)) });
+            Builders.AddConfigs(new List<Assembly> { Assembly.GetAssembly(typeof(TestableBuilderConfig)) });
 
-            Assert.Single(Builders.BuilderRegistrationStore.ConstructorRegistrations);
-            Assert.Single(Builders.BuilderRegistrationStore.PostBuildRegistrations);
+            Assert.Single(Builders.ConfigStore.Constructors);
+            Assert.Single(Builders.ConfigStore.PostBuilds);
         }
 
         [Fact]
-        public void AddBuilderRegistrationsAssemblyParams_ShouldFindImplementationInAssemblyAndExecute()
+        public void AddConfigsParams_ShouldFindImplementationInAssemblyAndExecute()
         {
-            Builders.AddBuilderRegistrations(Assembly.GetAssembly(typeof(TestableBuilderRegistration)));
+            Builders.AddConfigs(Assembly.GetAssembly(typeof(TestableBuilderConfig)));
 
-            Assert.Single(Builders.BuilderRegistrationStore.ConstructorRegistrations);
-            Assert.Single(Builders.BuilderRegistrationStore.PostBuildRegistrations);
+            Assert.Single(Builders.ConfigStore.Constructors);
+            Assert.Single(Builders.ConfigStore.PostBuilds);
         }
 
         [Fact]
-        public void AddBuilderRegistrationsTypeIEnumerable_ShouldFindImplementationInAssemblyAndExecute()
+        public void AddConfigsTypeIEnumerable_ShouldFindImplementationInAssemblyAndExecute()
         {
-            Builders.AddBuilderRegistrations(new List<Type> { typeof(TestableBuilderRegistration) });
+            Builders.AddConfigs(new List<Type> { typeof(TestableBuilderConfig) });
 
-            Assert.Single(Builders.BuilderRegistrationStore.ConstructorRegistrations);
-            Assert.Single(Builders.BuilderRegistrationStore.PostBuildRegistrations);
+            Assert.Single(Builders.ConfigStore.Constructors);
+            Assert.Single(Builders.ConfigStore.PostBuilds);
         }
 
         [Fact]
-        public void AddBuilderRegistrationsTypeParams_ShouldFindImplementationInAssemblyAndExecute()
+        public void AddConfigsTypeParams_ShouldFindImplementationInAssemblyAndExecute()
         {
-            Builders.AddBuilderRegistrations(typeof(TestableBuilderRegistration));
+            Builders.AddConfigs(typeof(TestableBuilderConfig));
 
-            Assert.Single(Builders.BuilderRegistrationStore.ConstructorRegistrations);
-            Assert.Single(Builders.BuilderRegistrationStore.PostBuildRegistrations);
+            Assert.Single(Builders.ConfigStore.Constructors);
+            Assert.Single(Builders.ConfigStore.PostBuilds);
         }
 
         [Fact]
-        public void AddBuilderRegistrations_ShouldUseAssemblyQualifiedNameOfType()
+        public void AddConfigs_ShouldUseAssemblyQualifiedNameOfType()
         {
-            Builders.AddBuilderRegistrations(typeof(TestableBuilderRegistration));
+            Builders.AddConfigs(typeof(TestableBuilderConfig));
 
-            Assert.Single(Builders.BuilderRegistrationStore.ConstructorRegistrations.Keys, typeof(TestableClass).AssemblyQualifiedName);
+            Assert.Single(Builders.ConfigStore.Constructors.Keys, typeof(TestableClass).AssemblyQualifiedName);
         }
 
         [Fact]
-        public void AddBuilderRegistrationsStringIEnumerable_ShouldFindImplementationInAssemblyAndExecute()
+        public void AddConfigsStringIEnumerable_ShouldFindImplementationInAssemblyAndExecute()
         {
-            Builders.AddBuilderRegistrations(new List<string> { "BitWiseBots.FluentBuilders.Tests.Unit" });
+            Builders.AddConfigs(new List<string> { "BitWiseBots.FluentBuilders.Tests.Unit" });
 
-            Assert.Single(Builders.BuilderRegistrationStore.ConstructorRegistrations);
-            Assert.Single(Builders.BuilderRegistrationStore.PostBuildRegistrations);
+            Assert.Single(Builders.ConfigStore.Constructors);
+            Assert.Single(Builders.ConfigStore.PostBuilds);
         }
 
         [Fact]
-        public void AddBuilderRegistrationsStringParams_ShouldFindImplementationInAssemblyAndExecute()
+        public void AddConfigsStringParams_ShouldFindImplementationInAssemblyAndExecute()
         {
-            Builders.AddBuilderRegistrations("BitWiseBots.FluentBuilders.Tests.Unit");
+            Builders.AddConfigs("BitWiseBots.FluentBuilders.Tests.Unit");
 
-            Assert.Single(Builders.BuilderRegistrationStore.ConstructorRegistrations);
-            Assert.Single(Builders.BuilderRegistrationStore.PostBuildRegistrations);
+            Assert.Single(Builders.ConfigStore.Constructors);
+            Assert.Single(Builders.ConfigStore.PostBuilds);
         }
 
         [Fact]
-        public void GetConstructorFunc_ShouldReturnFunc_WhenRegistrationExists()
+        public void GetConstructor_ShouldReturnFunc_WhenConfigExists()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(true, false, false));
+            Builders.AddConfig(new TestableBuilderConfig(true, false, false));
 
-            var result = Builders.BuilderRegistrationStore.GetConstructorFunc<TestableClass>();
+            var result = Builders.ConfigStore.GetConstructor<TestableClass>();
 
             Assert.NotNull(result);
         }
 
         [Fact]
-        public void GetConstructorFunc_ShouldReturnNull_WhenRegistrationDoesNotExist()
+        public void GetConstructor_ShouldReturnNull_WhenConfigDoesNotExist()
         {
-            var result = Builders.BuilderRegistrationStore.GetConstructorFunc<TestableClass>();
+            var result = Builders.ConfigStore.GetConstructor<TestableClass>();
 
             Assert.Null(result);
         }
 
         [Fact]
-        public void GetPostBuildAction_ShouldReturnAction_WhenRegistrationExists()
+        public void GetPostBuild_ShouldReturnAction_WhenConfigExists()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, true, false));
+            Builders.AddConfig(new TestableBuilderConfig(false, true, false));
 
-            var result = Builders.BuilderRegistrationStore.GetPostBuildAction<TestableClass>();
+            var result = Builders.ConfigStore.GetPostBuild<TestableClass>();
 
             Assert.NotNull(result);
         }
 
         [Fact]
-        public void GetPostBuildAction_ShouldReturnNull_WhenRegistrationDoesNotExist()
+        public void GetPostBuild_ShouldReturnNull_WhenConfigDoesNotExist()
         {
-            var result = Builders.BuilderRegistrationStore.GetPostBuildAction<TestableClass>();
+            var result = Builders.ConfigStore.GetPostBuild<TestableClass>();
 
             Assert.Null(result);
         }
 
         [Fact]
-        public void AddBuilderRegistration_ShouldThrowError_WhenSingleRegistrationAddsMultipleConstructorRegistrationsForSameType()
+        public void AddConfig_ShouldThrowError_WhenSingleConfigAddsMultipleConstructorsForSameType()
         {
-            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new BadTestableBuilderRegistration(true, false, false)));
+            Assert.Throws<BuildConfigurationException>(() => Builders.AddConfig(new BadTestableBuilderConfig(true, false, false)));
         }
 
         [Fact]
-        public void AddBuilderRegistration_ShouldThrowError_WhenSingleRegistrationAddsMultiplePostBuildActionRegistrationsForSameType()
+        public void AddConfig_ShouldThrowError_WhenSingleConfigAddsMultiplePostBuildActionsForSameType()
         {
-            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new BadTestableBuilderRegistration(false, true, false)));
+            Assert.Throws<BuildConfigurationException>(() => Builders.AddConfig(new BadTestableBuilderConfig(false, true, false)));
         }
 
         [Fact]
-        public void AddBuilderRegistration_ShouldThrowError_WhenSingleRegistrationAddsMultipleTypeDefaultRegistrationsForSameType()
+        public void AddConfig_ShouldThrowError_WhenSingleConfigAddsMultipleTypeDefaultsForSameType()
         {
-            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new BadTestableBuilderRegistration(false, false, true)));
+            Assert.Throws<BuildConfigurationException>(() => Builders.AddConfig(new BadTestableBuilderConfig(false, false, true)));
         }
 
         [Fact]
-        public void AddBuilderRegistration_ShouldThrowError_WhenMultipleRegistrationAddsSameConstructorRegistrations()
+        public void AddConfig_ShouldThrowError_WhenMultipleConfigsAddsSameConstructors()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(true, false, false));
-            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new TestableBuilderRegistration(true, false, false)));
+            Builders.AddConfig(new TestableBuilderConfig(true, false, false));
+            Assert.Throws<BuildConfigurationException>(() => Builders.AddConfig(new TestableBuilderConfig(true, false, false)));
         }
 
         [Fact]
-        public void AddBuilderRegistration_ShouldThrowError_WhenMultipleRegistrationAddsSamePostBuildActionRegistrations()
+        public void AddConfig_ShouldThrowError_WhenMultipleConfigsAddsSamePostBuildActions()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, true, false));
-            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, true, false)));
+            Builders.AddConfig(new TestableBuilderConfig(false, true, false));
+            Assert.Throws<BuildConfigurationException>(() => Builders.AddConfig(new TestableBuilderConfig(false, true, false)));
         }
 
         [Fact]
-        public void AddBuilderRegistration_ShouldThrowError_WhenMultipleRegistrationAddsSameTypeDefaultRegistrations()
+        public void AddConfig_ShouldThrowError_WhenMultipleConfigsAddsSameTypeDefaults()
         {
-            Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, false, true));
-            Assert.Throws<BuildConfigurationException>(() => Builders.AddBuilderRegistration(new TestableBuilderRegistration(false, false, true)));
+            Builders.AddConfig(new TestableBuilderConfig(false, false, true));
+            Assert.Throws<BuildConfigurationException>(() => Builders.AddConfig(new TestableBuilderConfig(false, false, true)));
         }
 
-        private class TestableBuilderRegistration : BuilderRegistration
+        private class TestableBuilderConfig : BuildConfig
         {
-            public TestableBuilderRegistration() : this(true, true, true)
+            public TestableBuilderConfig() : this(true, true, true)
             {
             }
 
-            public TestableBuilderRegistration(bool shouldRegisterConstructor, bool shouldRegisterPostBuild, bool shouldRegisterTypeDefaults)
+            public TestableBuilderConfig(bool shouldAddConstructor, bool shouldAddPostBuild, bool shouldAddTypeDefaults)
             {
-                if (shouldRegisterConstructor)
+                if (shouldAddConstructor)
                 {
-                    RegisterConstructor<TestableClass>(b => new TestableClass{Property = "someString"});
+                    AddConstructor<TestableClass>(b => new TestableClass{Property = "someString"});
                 }
 
-                if (shouldRegisterPostBuild)
+                if (shouldAddPostBuild)
                 {
-                    RegisterPostBuildAction<TestableClass>(c => c.Property = "someString");
+                    AddPostBuild<TestableClass>(c => c.Property = "someString");
                 }
 
-                if (shouldRegisterTypeDefaults)
+                if (shouldAddTypeDefaults)
                 {
-                    RegisterTypeDefaultFunc(Guid.NewGuid);
+                    AddTypeDefault(Guid.NewGuid);
                 }
             }
         }
 
-        private class BadTestableBuilderRegistration : BuilderRegistration
+        private class BadTestableBuilderConfig : BuildConfig
         {
             // This constructor gets used via reflection
             // ReSharper disable once UnusedMember.Local
-            public BadTestableBuilderRegistration() : this(false, false, false)
+            public BadTestableBuilderConfig() : this(false, false, false)
             {
             }
 
-            public BadTestableBuilderRegistration(bool shouldRegisterConstructor, bool shouldRegisterPostBuild, bool shouldRegisterTypeDefaults)
+            public BadTestableBuilderConfig(bool shouldAddConstructor, bool shouldAddPostBuild, bool shouldAddTypeDefaults)
             {
-                if (shouldRegisterConstructor)
+                if (shouldAddConstructor)
                 {
-                    RegisterConstructor<TestableClass>(b => new TestableClass{Property = "someString"});
-                    RegisterConstructor<TestableClass>(b => new TestableClass{Property = "someString"});
+                    AddConstructor<TestableClass>(b => new TestableClass{Property = "someString"});
+                    AddConstructor<TestableClass>(b => new TestableClass{Property = "someString"});
                 }
 
-                if (shouldRegisterPostBuild)
+                if (shouldAddPostBuild)
                 {
-                    RegisterPostBuildAction<TestableClass>(c => c.Property = "someString");
-                    RegisterPostBuildAction<TestableClass>(c => c.Property = "someString");
+                    AddPostBuild<TestableClass>(c => c.Property = "someString");
+                    AddPostBuild<TestableClass>(c => c.Property = "someString");
                 }
 
-                if (shouldRegisterTypeDefaults)
+                if (shouldAddTypeDefaults)
                 {
-                    RegisterTypeDefaultFunc(() => new TestableClass());
-                    RegisterTypeDefaultFunc(() => new TestableClass());
+                    AddTypeDefault(() => new TestableClass());
+                    AddTypeDefault(() => new TestableClass());
                 }
             }
         }

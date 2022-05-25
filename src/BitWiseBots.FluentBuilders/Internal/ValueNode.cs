@@ -25,7 +25,7 @@ namespace BitWiseBots.FluentBuilders.Internal
         /// <param name="expression">The expression that accesses the property this node represents.</param>
         /// <param name="value">The value to be set on the property this node represents.</param>
         /// <param name="valueType">The type of property this node represents.</param>
-        /// <param name="allowDefaults">Whether or not to use registered type defaults when <paramref name="value"/> is <c>default</c>.</param>
+        /// <param name="allowDefaults">Whether or not to use stored type defaults when <paramref name="value"/> is <c>default</c>.</param>
         /// <param name="root">The <see cref="RootNode"/> for the tree this node belongs to.</param>
         protected ValueNode(Expression expression, object value, Type valueType, bool allowDefaults, RootNode root) : base(root)
         {
@@ -55,7 +55,7 @@ namespace BitWiseBots.FluentBuilders.Internal
 
                 if (Equals(value, GetDefault(_valueType)) && _allowDefaults)
                 {
-                    value = Root.BuilderRegistrationStore.GetTypeDefaultFunc(_valueType)?.DynamicInvoke();
+                    value = Root.ConfigStore.GetTypeDefault(_valueType)?.DynamicInvoke();
                 }
 
                 return value;
