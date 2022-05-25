@@ -1,3 +1,7 @@
+v1.0.0
+- Moved docs to gh-pages branch
+- Refactored registration components to simplify the names and interfaces
+
 v0.5.0
 - Filled out readme.
 
