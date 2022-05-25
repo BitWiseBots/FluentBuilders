@@ -15,19 +15,19 @@ namespace BitWiseBots.FluentBuilders
     {
         internal readonly BranchNode BuilderRootNode;
 
-        private readonly BuilderRegistrationStore _builderRegistrationStore;
+        private readonly ConfigStore _configStore;
         private readonly Func<IConstructorBuilder<T>, T> _customConstructorFunc;
         private readonly Action<T> _customPostBuildAction;
 
         private bool _isExecutingConstructorExpression;
 
-        internal Builder(BuilderRegistrationStore builderRegistrationStore, Func<IConstructorBuilder<T>,T> customConstructorFunc, Action<T> customPostBuildAction)
+        internal Builder(ConfigStore configStore, Func<IConstructorBuilder<T>,T> customConstructorFunc, Action<T> customPostBuildAction)
         {
-            _builderRegistrationStore = builderRegistrationStore;
+            _configStore = configStore;
             _customConstructorFunc = customConstructorFunc;
             _customPostBuildAction = customPostBuildAction;
 
-            BuilderRootNode = new RootNode(this, _builderRegistrationStore, typeof(T) );
+            BuilderRootNode = new RootNode(this, _configStore, typeof(T) );
         }
 
         public static implicit operator T(Builder<T> builder)
@@ -52,7 +52,7 @@ namespace BitWiseBots.FluentBuilders
         /// <typeparam name="T2">The type of the property being set.</typeparam>
         /// <param name="expression">An expression that accesses the property to be set.</param>
         /// <param name="value">The value to be set on the property.</param>
-        /// <param name="allowDefaults">Whether or not to use registered type defaults when <paramref name="value"/> is <c>default</c>.</param>
+        /// <param name="allowDefaults">Whether or not to use stored type defaults when <paramref name="value"/> is <c>default</c>.</param>
         public Builder<T> With<T2>(Expression<Func<T, T2>> expression, T2 value = default, bool allowDefaults = true)
         {
             var exprStack = ExtractExpressionStack(expression);
@@ -99,7 +99,7 @@ namespace BitWiseBots.FluentBuilders
         /// <typeparam name="T2">The type of the property being set.</typeparam>
         /// <param name="expression">An expression that accesses the property to be set.</param>
         /// <param name="valueFunction">A function that returns a value to be set on the property</param>
-        /// <param name="allowDefaults">Whether or not to use registered type defaults when <paramref name="valueFunction"/> returns <c>default</c>.</param>
+        /// <param name="allowDefaults">Whether or not to use stored type defaults when <paramref name="valueFunction"/> returns <c>default</c>.</param>
         public Builder<T> With<T2>(Expression<Func<T, T2>> expression, Func<IConstructorBuilder<T>, T2> valueFunction, bool allowDefaults = true)
         {
             var exprStack = ExtractExpressionStack(expression);
@@ -175,7 +175,7 @@ namespace BitWiseBots.FluentBuilders
 
             BuilderRootNode.ApplyTo(builtObject);
 
-            var postBuildAction = _customPostBuildAction ?? _builderRegistrationStore.GetPostBuildAction<T>();
+            var postBuildAction = _customPostBuildAction ?? _configStore.GetPostBuild<T>();
             postBuildAction?.Invoke(builtObject);
 
             return builtObject;
@@ -218,11 +218,11 @@ namespace BitWiseBots.FluentBuilders
         }
 
         /// <summary>
-        /// Either executes a <see cref="Func{TConstructorBuilder,T}"/> if one was registered, or attempts to create a <typeparamref name="T"/> instance using <see cref="Activator"/>.
+        /// Either executes a <see cref="Func{TConstructorBuilder,T}"/> if one is in the config store, or attempts to create a <typeparamref name="T"/> instance using <see cref="Activator"/>.
         /// </summary>
         private T Create()
         {
-            var constructorExpression = _customConstructorFunc ?? _builderRegistrationStore.GetConstructorFunc<T>();
+            var constructorExpression = _customConstructorFunc ?? _configStore.GetConstructor<T>();
             if (constructorExpression != null)
             {
                 _isExecutingConstructorExpression = true;
@@ -236,7 +236,7 @@ namespace BitWiseBots.FluentBuilders
                 return Activator.CreateInstance<T>();
             }
 
-            throw new BuildConfigurationException($"No Parameter-less Constructor present on type {typeof(T).FullName}.\nEnsure a registration exists in an implementation of IBuilderFactoryRegistration.\nAnd that you have called Builders.RunBuilderRegistrationsFromAssemblies with the assembly or assemblies that contain your implementations.");
+            throw new BuildConfigurationException($"No Parameter-less Constructor present on type {typeof(T).FullName}.\nEnsure a construction function is added in an implementation of BuilderConfig.\nAnd that you have called one of the Builders.AddConfig methods.");
         }
     }
 }
