@@ -1,3 +1,7 @@
+v1.0.1
+- Moved GH Pages to separate repo
+- Update project urls to point to new GH Pages instance.
+
 v1.0.0
 - Moved docs to gh-pages branch
 - Refactored registration components to simplify the names and interfaces
