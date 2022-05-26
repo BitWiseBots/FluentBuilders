@@ -38,4 +38,4 @@ Builders.Create<Person>
 ```
 
 This only scratches the surface of what FluentBuilders can accomplish.
-If you have more complex objects or even graphs of objects check out our in depth usage guides [here](https://bitwisebots.github.io/FluentBuilders/).
+If you have more complex objects or even graphs of objects check out our in depth usage guides [here](https://bitwisebots.github.io/fluent-builders/).

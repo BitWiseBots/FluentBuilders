@@ -1,3 +1,6 @@
+v1.0.2
+- Missed updating link in readme file.
+
 v1.0.1
 - Moved GH Pages to separate repo
 - Update project urls to point to new GH Pages instance.
