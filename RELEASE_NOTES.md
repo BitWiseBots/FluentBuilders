@@ -1,4 +1,7 @@
-v1.1.0
+v1.1.2
+- Removing embedded debug flag.
+
+v1.1.1
 - Adding target for netstandard 2.0 to allow for .net framework support.
 
 v1.0.3
