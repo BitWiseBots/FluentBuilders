@@ -1,13 +1,11 @@
 version: 2.1
 
 orbs:
-  windows: circleci/windows@2.4.1
+  windows: circleci/windows@4.1.1
 
 jobs:
   test:
     description: Setup and run unit tests
-    executor:
-      name: windows/default
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:6.0
     steps:
@@ -33,8 +31,8 @@ jobs:
           destination: TestResults
   buildAndDeploy:
     description: Build and Deploy library with Release configuration
-    executor:
-      name: windows/default
+    docker:
+      - image: mcr.microsoft.com/dotnet/sdk:6.0
     steps:
       - checkout
       - when:
