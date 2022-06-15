@@ -1,3 +1,6 @@
+v2.0.1
+- Renaming Builders back to BuilderFactory to avoid namespace collisions for consumers.
+
 v1.1.2
 - Removing embedded debug flag.
 
