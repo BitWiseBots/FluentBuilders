@@ -39,6 +39,10 @@ jobs:
       - image: bitwisebots/cci-dotnet-multitarget:0.0.1
     steps:
       - checkout
+      - run: 
+          name: "Setup Path Variable"
+          command: |          
+            echo 'export PATH="$PATH:/root/.dotnet/tools"' >> $BASH_ENV
       - when:
             condition:
                equal: [main, << pipeline.git.branch >>]
