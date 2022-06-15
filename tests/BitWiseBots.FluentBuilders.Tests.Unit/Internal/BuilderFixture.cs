@@ -403,7 +403,7 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
         {
             var ex = Assert.Throws<BuildConfigurationException>(() => Create<TestableImmutableObject>().Build());
 
-            Assert.Equal("No Parameter-less Constructor present on type BitWiseBots.FluentBuilders.Tests.Unit.Internal.BuilderFixture+TestableImmutableObject.\nEnsure a construction function is added in an implementation of BuilderConfig.\nAnd that you have called one of the Builders.AddConfig methods.", ex.Message);
+            Assert.Equal("No Parameter-less Constructor present on type BitWiseBots.FluentBuilders.Tests.Unit.Internal.BuilderFixture+TestableImmutableObject.\nEnsure a construction function is added in an implementation of BuilderConfig.\nAnd that you have called one of the BuilderFactory.AddConfig methods.", ex.Message);
         }
 
         [Fact]

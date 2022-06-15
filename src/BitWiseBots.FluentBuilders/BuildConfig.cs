@@ -7,22 +7,22 @@ using JetBrains.Annotations;
 namespace BitWiseBots.FluentBuilders
 {
     /// <summary>
-    /// Provides the base functionality for adding constructors, post builds, and type defaults to be used by <see cref="Builders"/> when creating new <see cref="Builder{T}"/>.
+    /// Provides the base functionality for adding constructors, post builds, and type defaults to be used by <see cref="BuilderFactory"/> when creating new <see cref="Builder{T}"/>.
     /// </summary>
     public abstract class BuilderConfig : IHideObjectMembers
     {
         /// <summary>
-        /// Store all the constructor functions in an <c>internal</c> collection to be collated by <see cref="Builders"/>
+        /// Store all the constructor functions in an <c>internal</c> collection to be collated by <see cref="BuilderFactory"/>
         /// </summary>
         internal readonly Dictionary<string, Delegate> Constructors = new();
 
         /// <summary>
-        /// Store all the post build actions in an <c>internal</c> collection to be collated by <see cref="Builders"/>
+        /// Store all the post build actions in an <c>internal</c> collection to be collated by <see cref="BuilderFactory"/>
         /// </summary>
         internal readonly Dictionary<string, Delegate> PostBuilds = new();
 
         /// <summary>
-        /// Store all the type defaults in an <c>internal</c> collection to be collated by <see cref="Builders"/>
+        /// Store all the type defaults in an <c>internal</c> collection to be collated by <see cref="BuilderFactory"/>
         /// </summary>
         internal readonly Dictionary<string, Delegate> TypeDefaults = new();
 
