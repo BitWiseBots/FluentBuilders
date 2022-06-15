@@ -211,6 +211,18 @@ namespace BitWiseBots.FluentBuilders.Internal
         /// </remarks>
         private void ApplyToBuilder<T>(Builder<T> builder)
         {
+            #if NETSTANDARD2_0
+            foreach (var kvp in _nodeBranches)
+            {
+                builder.BuilderRootNode.AddBranchNode(kvp.Key, kvp.Value);
+            }
+
+            foreach (var kvp in _nodeValues)
+            {
+                builder.BuilderRootNode.AddValueNode(kvp.Key, kvp.Value);
+            }
+
+            #elif NETSTANDARD2_1
             foreach (var (key, value) in _nodeBranches)
             {
                 builder.BuilderRootNode.AddBranchNode(key, value);
@@ -220,6 +232,7 @@ namespace BitWiseBots.FluentBuilders.Internal
             {
                 builder.BuilderRootNode.AddValueNode(key, value);
             }
+            #endif
         }
 
         /// <summary>

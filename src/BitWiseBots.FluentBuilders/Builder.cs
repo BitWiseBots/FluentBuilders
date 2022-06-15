@@ -55,6 +55,21 @@ namespace BitWiseBots.FluentBuilders
         /// <param name="allowDefaults">Whether or not to use stored type defaults when <paramref name="value"/> is <c>default</c>.</param>
         public Builder<T> With<T2>(Expression<Func<T, T2>> expression, T2 value = default, bool allowDefaults = true)
         {
+            #if NETSTANDARD2_0
+            var exprStack = ExtractExpressionStack(expression);
+
+            var currentNode = BuilderRootNode;
+            while (exprStack.Count > 1)
+            {
+                var childKvp = exprStack.Pop();
+                currentNode = currentNode.AddOrGetBranchNode(childKvp.Key, childKvp.Value);
+            }
+
+            var valueKvp = exprStack.Pop();
+            currentNode.AddOrGetValueNode<T2>(valueKvp.Key, valueKvp.Value, value, allowDefaults);
+            return this;
+
+            #elif NETSTANDARD2_1
             var exprStack = ExtractExpressionStack(expression);
 
             var currentNode = BuilderRootNode;
@@ -67,6 +82,7 @@ namespace BitWiseBots.FluentBuilders
             var (valueKey, valueExpression) = exprStack.Pop();
             currentNode.AddOrGetValueNode<T2>(valueKey, valueExpression, value, allowDefaults);
             return this;
+            #endif
         }
 
         /// <summary>
