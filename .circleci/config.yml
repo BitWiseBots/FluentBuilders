@@ -32,7 +32,7 @@ jobs:
   buildAndDeploy:
     description: Build and Deploy library with Release configuration
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:6.0
+      - image: bitwisebots/cci-dotnet-multitarget:0.0.1
     steps:
       - checkout
       - when:
