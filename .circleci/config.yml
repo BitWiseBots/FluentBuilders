@@ -51,7 +51,7 @@ jobs:
                     name: Push to NuGet
                     command: |
                       dotnet pack --output artifacts --configuration Release /p:ContinuousIntegrationBuild=true
-                      dotnet nuget push "**/*.nupkg" -s "https://api.nuget.org/v3/index.json" --api-key "$env:NUGET_API_KEY"
+                      dotnet nuget push "**/*.nupkg" -s "https://api.nuget.org/v3/index.json" --api-key "$NUGET_API_KEY"
       - when:
             condition:
                not: 
