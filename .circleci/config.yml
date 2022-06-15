@@ -7,7 +7,7 @@ jobs:
   test:
     description: Setup and run unit tests
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:6.0
+      - image: bitwisebots/cci-dotnet-multitarget:0.0.1
     steps:
       - checkout
       - run:
