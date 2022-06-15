@@ -39,6 +39,10 @@ jobs:
       - image: bitwisebots/cci-dotnet-multitarget:0.0.1
     steps:
       - checkout
+      - run: 
+          name: "Setup Path Variable"
+          command: |          
+            echo 'export PATH="$PATH:/root/.dotnet/tools"' >> $BASH_ENV
       - when:
             condition:
                equal: [main, << pipeline.git.branch >>]
@@ -47,7 +51,7 @@ jobs:
                     name: Push to NuGet
                     command: |
                       dotnet pack --output artifacts --configuration Release /p:ContinuousIntegrationBuild=true
-                      dotnet nuget push "**/*.nupkg" -s "https://api.nuget.org/v3/index.json" --api-key "$env:NUGET_API_KEY"
+                      dotnet nuget push "**/*.nupkg" -s "https://api.nuget.org/v3/index.json" --api-key "$NUGET_API_KEY"
       - when:
             condition:
                not: 

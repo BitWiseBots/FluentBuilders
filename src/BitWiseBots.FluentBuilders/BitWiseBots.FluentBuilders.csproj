@@ -17,7 +17,6 @@
 		<PackageIcon>logo.png</PackageIcon>
 		<RepositoryUrl>https://github.com/BitWiseBots/FluentBuilders</RepositoryUrl>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-		<DebugType>embedded</DebugType>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
