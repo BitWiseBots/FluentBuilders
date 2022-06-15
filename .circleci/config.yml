@@ -10,6 +10,10 @@ jobs:
       - image: bitwisebots/cci-dotnet-multitarget:0.0.1
     steps:
       - checkout
+      - run: 
+          name: "Setup Path Variable"
+          command: |          
+            echo 'export PATH="$PATH:/root/.dotnet/tools"' >> $BASH_ENV
       - run:
           name: "Run Unit Tests"
           command: dotnet test --logger "trx" --results-directory "TestResults"
