@@ -252,7 +252,7 @@ namespace BitWiseBots.FluentBuilders
                 return Activator.CreateInstance<T>();
             }
 
-            throw new BuildConfigurationException($"No Parameter-less Constructor present on type {typeof(T).FullName}.\nEnsure a construction function is added in an implementation of BuilderConfig.\nAnd that you have called one of the Builders.AddConfig methods.");
+            throw new BuildConfigurationException($"No Parameter-less Constructor present on type {typeof(T).FullName}.\nEnsure a construction function is added in an implementation of BuilderConfig.\nAnd that you have called one of the BuilderFactory.AddConfig methods.");
         }
     }
 }

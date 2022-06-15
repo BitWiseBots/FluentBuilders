@@ -11,7 +11,7 @@ namespace BitWiseBots.FluentBuilders
     /// <summary>
     /// Creates new <see cref="Builder{T}"/> instances and manages the configs for constructing and configuring the constructed type.
     /// </summary>
-    public static class Builders
+    public static class BuilderFactory
     {
         private static readonly Lazy<ConfigStore> StoreInitializer = new();
 
@@ -120,7 +120,7 @@ namespace BitWiseBots.FluentBuilders
         }
 
         /// <summary>
-        /// Creates a <see cref="Builder{T}"/> for the provided type, uses a Constructor Expression if one was added with <see cref="Builders"/>.
+        /// Creates a <see cref="Builder{T}"/> for the provided type, uses a Constructor Expression if one was added with <see cref="BuilderFactory"/>.
         /// </summary>
         /// <typeparam name="T">The type to be built.</typeparam>
         [PublicAPI]
