@@ -1,3 +1,9 @@
+v1.1.0
+- Adding target for netstandard 2.0 to allow for .net framework support.
+
+v1.0.3
+- Including license file in nuget package.
+
 v1.0.2
 - Missed updating link in readme file.
 

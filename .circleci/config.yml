@@ -1,18 +1,22 @@
 version: 2.1
 
 orbs:
-  windows: circleci/windows@2.4.1
+  windows: circleci/windows@4.1.1
 
 jobs:
   test:
     description: Setup and run unit tests
-    executor:
-      name: windows/default
+    docker:
+      - image: bitwisebots/cci-dotnet-multitarget:0.0.1
     steps:
       - checkout
+      - run: 
+          name: "Setup Path Variable"
+          command: |          
+            echo 'export PATH="$PATH:/root/.dotnet/tools"' >> $BASH_ENV
       - run:
           name: "Run Unit Tests"
-          command: dotnet.exe test --logger "trx" --results-directory "TestResults"
+          command: dotnet test --logger "trx" --results-directory "TestResults"
       - run:
           name: "Run Test Coverage"
           command: |
@@ -31,8 +35,8 @@ jobs:
           destination: TestResults
   buildAndDeploy:
     description: Build and Deploy library with Release configuration
-    executor:
-      name: windows/default
+    docker:
+      - image: bitwisebots/cci-dotnet-multitarget:0.0.1
     steps:
       - checkout
       - when:

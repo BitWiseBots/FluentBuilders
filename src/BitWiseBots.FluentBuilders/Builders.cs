@@ -152,6 +152,23 @@ namespace BitWiseBots.FluentBuilders
         /// </summary>
         private static void AppendConfigs(BuilderConfig builderConfig)
         {
+            #if NETSTANDARD2_0
+            foreach (var kvp in builderConfig.Constructors)
+            {
+                ConfigStore.AddConstructor(kvp.Key, kvp.Value);
+            }
+
+            foreach (var kvp in builderConfig.PostBuilds)
+            {
+                ConfigStore.AddPostBuild(kvp.Key, kvp.Value);
+            }
+
+            foreach (var kvp in builderConfig.TypeDefaults)
+            {
+                ConfigStore.AddTypeDefault(kvp.Key, kvp.Value);
+            }
+
+            #elif NETSTANDARD2_1
             foreach (var (key, value) in builderConfig.Constructors)
             {
                 ConfigStore.AddConstructor(key, value);
@@ -166,6 +183,7 @@ namespace BitWiseBots.FluentBuilders
             {
                 ConfigStore.AddTypeDefault(key, value);
             }
+            #endif
         }
     }
 }
