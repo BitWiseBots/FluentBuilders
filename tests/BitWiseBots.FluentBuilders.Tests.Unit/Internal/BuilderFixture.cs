@@ -685,8 +685,21 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
             Assert.True(wasCalled);
         }
 
+        [Fact]
+        public void Build_ShouldUseGivenValue_WhenValueIsPrimitiveAndNoTypeDefaultGiven()
+        {
+            AddConstructor<TestableImmutableObject>(b => new TestableImmutableObject(b.From(o => o.IntProperty)));
+
+            var builder = Create<TestableImmutableObject>()
+                .With(o => o.IntProperty, 0);
+
+            var result = builder.Build();
+
+            Assert.Equal(0, result.IntProperty);
+        }
+
 #endregion
-#region TestSupportTypes
+        #region TestSupportTypes
 		private class TestableMutableObject : IEquatable<TestableMutableObject>
 		{
 			/// <inheritdoc />
@@ -784,6 +797,11 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
 
 		private class TestableImmutableObject : TestableMutableObject
 		{
+            public TestableImmutableObject(int intProperty)
+            {
+                IntProperty = intProperty;
+            }
+
 			public TestableImmutableObject(string singleProperty, ICollection<string> multipleProperty, TestableImmutableObject immutableNestedProperty, TestableMutableObject mutableNestProperty)
 			{
 				SingleProperty = singleProperty;
@@ -804,6 +822,6 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
                 this[key] = value;
             }
         }
-#endregion
+        #endregion
 	}
 }
