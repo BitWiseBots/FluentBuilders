@@ -1,3 +1,6 @@
+v2.1.2
+- Fixed an issue when trying to construct a type that takes a primitive value in its constructor would throw a null reference exception if the type default was registered.
+
 v2.1.1
 - Adding With overload that takes a function to generate the value, and a number of times to repeat the call for filling an IEnumerable property.
 
