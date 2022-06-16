@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using BitWiseBots.FluentBuilders.Interfaces;
 using BitWiseBots.FluentBuilders.Internal;
+using JetBrains.Annotations;
 
 namespace BitWiseBots.FluentBuilders
 {
@@ -41,6 +42,7 @@ namespace BitWiseBots.FluentBuilders
         /// <typeparam name="T2">The type of the property being set.</typeparam>
         /// <param name="expression">An expression that accesses the property to be set.</param>
         /// <param name="values">The collection of values to be added on the property.</param>
+        [PublicAPI]
         public Builder<T> With<T2>(Expression<Func<T, IEnumerable<T2>>> expression, params T2[] values)
         {
             return With(expression, values.ToList());
@@ -53,6 +55,7 @@ namespace BitWiseBots.FluentBuilders
         /// <param name="expression">An expression that accesses the property to be set.</param>
         /// <param name="value">The value to be set on the property.</param>
         /// <param name="allowDefaults">Whether or not to use stored type defaults when <paramref name="value"/> is <c>default</c>.</param>
+        [PublicAPI]
         public Builder<T> With<T2>(Expression<Func<T, T2>> expression, T2 value = default, bool allowDefaults = true)
         {
             #if NETSTANDARD2_0
@@ -92,6 +95,7 @@ namespace BitWiseBots.FluentBuilders
         /// <typeparam name="T2">The type of the property being set.</typeparam>
         /// <param name="expression">An expression that accesses the property to be set.</param>
         /// <param name="valueFunction">A function that returns a value to be set on the property</param>
+        [PublicAPI]
         public Builder<T> With<T2>(Expression<Func<T, T2>> expression, Func<T2> valueFunction)
         {
             var exprStack = ExtractExpressionStack(expression);
@@ -109,6 +113,42 @@ namespace BitWiseBots.FluentBuilders
         }
 
         /// <summary>
+        /// Provides a function to generate a new value to be set on the property specified by <paramref name="expression"/>.
+        /// The function will only be executed once <see cref="Build"/> is called.
+        /// </summary>
+        /// <typeparam name="T2">The type of the property being set.</typeparam>
+        /// <param name="expression">An expression that accesses the property to be set.</param>
+        /// <param name="valueFunction">A function that returns a value to be set on the property</param>
+        /// <param name="itemCount">The number of times to call <see cref="valueFunction"/> when generating the list.</param>
+        [PublicAPI]
+        public Builder<T> With<T2>(Expression<Func<T, IEnumerable<T2>>> expression, Func<T2> valueFunction, int itemCount = 1)
+        {
+            var exprStack = ExtractExpressionStack(expression);
+
+            var currentNode = BuilderRootNode;
+            while (exprStack.Count > 1)
+            {
+                var poppedExpr = exprStack.Pop();
+                currentNode = currentNode.AddOrGetBranchNode(poppedExpr.Key, poppedExpr.Value);
+            }
+
+            IEnumerable<T2> CollectionFunction()
+            {
+                var collection = new List<T2>();
+                for (var i = 0; i < itemCount; i++)
+                {
+                    collection.Add(valueFunction());
+                }
+
+                return collection;
+            }
+
+            var expr = exprStack.Pop();
+            currentNode.AddOrGetValueNode<T2>(expr.Key, expr.Value, (Func<IEnumerable<T2>>) CollectionFunction, false);
+            return this;
+        }
+
+        /// <summary>
         /// Provides a function to retrieve a value from another call to <see cref="M:With{T2}"/> to be set on the property specified by <paramref name="expression"/>.
         /// The function will only be executed once <see cref="Build"/> is called.
         /// </summary>
@@ -116,6 +156,7 @@ namespace BitWiseBots.FluentBuilders
         /// <param name="expression">An expression that accesses the property to be set.</param>
         /// <param name="valueFunction">A function that returns a value to be set on the property</param>
         /// <param name="allowDefaults">Whether or not to use stored type defaults when <paramref name="valueFunction"/> returns <c>default</c>.</param>
+        [PublicAPI]
         public Builder<T> With<T2>(Expression<Func<T, T2>> expression, Func<IConstructorBuilder<T>, T2> valueFunction, bool allowDefaults = true)
         {
             var exprStack = ExtractExpressionStack(expression);
@@ -133,20 +174,7 @@ namespace BitWiseBots.FluentBuilders
         }
 
         /// <inheritdoc />
-        T2 IConstructorBuilder<T>.From<T2>(Expression<Func<T, T2>> expression)
-        {
-            IConstructorBuilder<T> builder = this;
-            return builder.From(expression, default(T2));
-        }
-
-        /// <inheritdoc />
-        T2 IConstructorBuilder<T>.From<T2>(Expression<Func<T, T2>> expression, Builder<T2> defaultValueBuilder)
-        {
-            IConstructorBuilder<T> builder = this;
-            return builder.From(expression, defaultValueBuilder.Build());
-        }
-
-        /// <inheritdoc />
+        [PublicAPI]
         T2 IConstructorBuilder<T>.From<T2>(Expression<Func<T, T2>> expression, T2 defaultValue)
         {
             var exprStack = ExtractExpressionStack(expression);
@@ -185,6 +213,7 @@ namespace BitWiseBots.FluentBuilders
         /// Creates a new instance of <typeparamref name="T"/> either using <see cref="Activator"/> or a provided constructor expression.
         /// Or if <paramref name="baseline"/> is provided, the builder config will be applied to the existing instance.
         /// </summary>
+        [PublicAPI]
         public T Build(T baseline = default)
         {
             var builtObject = baseline ?? Create();

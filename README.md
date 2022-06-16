@@ -31,7 +31,7 @@ public class Person
 
 You would create a builder, set its properties, and construct the final object like this:
 ```
-Builders.Create<Person>
+BuilderFactory.Create<Person>
     .With(p => p.FirstName, "John")
     .With(p => p.LastName, "Doe")
     .Build()
