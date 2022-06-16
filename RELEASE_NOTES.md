@@ -1,3 +1,6 @@
+v2.1.1
+- Adding With overload that takes a function to generate the value, and a number of times to repeat the call for filling an IEnumerable property.
+
 v2.0.1
 - Renaming Builders back to BuilderFactory to avoid namespace collisions for consumers.
 
