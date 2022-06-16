@@ -1,4 +1,4 @@
-v2.1.2
+v2.1.3
 - Fixed an issue when trying to construct a type that takes a primitive value in its constructor would throw a null reference exception if the type default was registered.
 
 v2.1.1
