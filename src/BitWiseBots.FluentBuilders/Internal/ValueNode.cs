@@ -53,9 +53,12 @@ namespace BitWiseBots.FluentBuilders.Internal
                         : ((Delegate) _value).DynamicInvoke()
                     : _value;
 
-                if (Equals(value, GetDefault(_valueType)) && _allowDefaults)
+                if (!Equals(value, GetDefault(_valueType)) || !_allowDefaults) return value;
+                
+                var typeDefaultFunc = Root.ConfigStore.GetTypeDefault(_valueType);
+                if (typeDefaultFunc != null)
                 {
-                    value = Root.ConfigStore.GetTypeDefault(_valueType)?.DynamicInvoke();
+                    value = typeDefaultFunc.DynamicInvoke();
                 }
 
                 return value;
