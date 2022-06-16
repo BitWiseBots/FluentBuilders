@@ -325,6 +325,54 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
         }
 
         [Fact]
+        public void WithMultipleValueFunc_ShouldCallFuncOnce_WhenNoItemCountProvided()
+        {
+            var i = 0;
+            var builder = Create<TestableMutableObject>();
+            builder.With(b => b.MultipleProperty, () => i++.ToString());
+
+            var result = builder.Build();
+
+            Assert.Collection(result.MultipleProperty, s => Assert.Equal("0", s));
+        }
+
+        [Fact]
+        public void WithMultipleValueFunc_ShouldCallFuncGivenTimes_WhenItemCountProvided()
+        {
+            var i = 0;
+            var builder = Create<TestableMutableObject>();
+            builder.With(b => b.MultipleProperty, () => i++.ToString(), 3);
+
+            var result = builder.Build();
+
+            Assert.Collection(result.MultipleProperty, 
+                s => Assert.Equal("0", s), 
+                s => Assert.Equal("1", s), 
+                s => Assert.Equal("2", s));
+        }
+
+        [Fact]
+        public void WithMultipleValueFunc_ShouldCallFuncGivenTimesEachTimeBuildIsCalled_WhenItemCountProvided()
+        {
+            var i = 0;
+            var builder = Create<TestableMutableObject>();
+            builder.With(b => b.MultipleProperty, () => i++.ToString(), 3);
+
+            var result1 = builder.Build();
+            var result2 = builder.Build();
+
+            Assert.Collection(result1.MultipleProperty, 
+                s => Assert.Equal("0", s), 
+                s => Assert.Equal("1", s), 
+                s => Assert.Equal("2", s));
+
+            Assert.Collection(result2.MultipleProperty, 
+                s => Assert.Equal("3", s), 
+                s => Assert.Equal("4", s), 
+                s => Assert.Equal("5", s));
+        }
+
+        [Fact]
         public void Build_ShouldUseStoredConstructor_WhenTypeIsMutable()
         {
             AddConstructor<TestableMutableObject>(b => new TestableMutableObject{SingleProperty = "someValue" });
