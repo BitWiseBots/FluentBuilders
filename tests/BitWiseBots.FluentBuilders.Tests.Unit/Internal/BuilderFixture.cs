@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BitWiseBots.FluentBuilders.Interfaces;
 using BitWiseBots.FluentBuilders.Internal;
 using Xunit;
+
 // The following rules are disabled as a result of items only used via reflection.
 // ReSharper disable NonReadonlyMemberInGetHashCode
 // ReSharper disable MemberCanBeProtected.Local
@@ -13,9 +14,9 @@ using Xunit;
 namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
 {
 	public class BuilderFixture
-	{
+    {
         private readonly ConfigStore _configStore = new ConfigStore();
-
+        
         internal void AddConstructor<T>(Func<IConstructorBuilder<T>,T> func)
         {
             _configStore.AddConstructor(typeof(T).GetStoreKey(), func);
@@ -37,6 +38,7 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
         }
 
 #region Mutable With Tests
+
         [Fact]
         public void WithValue_ShouldAllowValueToBeSet_WhenBuildIsCalled()
         {
@@ -373,6 +375,48 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
         }
 
         [Fact]
+        public void WithAbstractProperty_ShouldSetNestedProperty_WhenAbstractValueGivenFirst()
+        {
+            var builder = Create<TestableMutableObject>();
+            
+            builder.With(b => b.AbstractProperty, new DerivedObject());
+            builder.With(b => b.AbstractProperty.StringProperty, "AbstractString");
+            
+            var result = builder.Build();
+
+            Assert.IsType<DerivedObject>(result.AbstractProperty);
+            Assert.Equal("AbstractString", result.AbstractProperty.StringProperty);
+        }
+
+        [Fact]
+        public void WithAbstractProperty_ShouldSetNestedProperty_WhenNestedValueGivenFirst()
+        {
+            var builder = Create<TestableMutableObject>();
+            
+            builder.With(b => b.AbstractProperty.StringProperty, "AbstractString");
+            builder.With(b => b.AbstractProperty, new DerivedObject());
+            
+            var result = builder.Build();
+
+            Assert.IsType<DerivedObject>(result.AbstractProperty);
+            Assert.Equal("AbstractString", result.AbstractProperty.StringProperty);
+        }
+
+        [Fact]
+        public void WithAbstractProperty_ShouldBeAbleToSetDerivedProperties_WhenAbstractIsTypeCast()
+        {
+            var builder = Create<TestableMutableObject>();
+            
+            builder.With(b => ((DerivedObject)b.AbstractProperty).DerivedStringProperty, "DerivedString");
+            builder.With(b => b.AbstractProperty, new DerivedObject());
+            
+            var result = builder.Build();
+
+            Assert.IsType<DerivedObject>(result.AbstractProperty);
+            Assert.Equal("DerivedString", ((DerivedObject)result.AbstractProperty).DerivedStringProperty);
+        }
+
+        [Fact]
         public void Build_ShouldUseStoredConstructor_WhenTypeIsMutable()
         {
             AddConstructor<TestableMutableObject>(b => new TestableMutableObject{SingleProperty = "someValue" });
@@ -441,7 +485,6 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
             Assert.True(customWasCalled);
             Assert.False(storedWasCalled);
         }
-
         #endregion
 
         #region Immutable With Tests
@@ -698,7 +741,7 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
             Assert.Equal(0, result.IntProperty);
         }
 
-#endregion
+        #endregion
         #region TestSupportTypes
 		private class TestableMutableObject : IEquatable<TestableMutableObject>
 		{
@@ -754,6 +797,7 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
 			public string SingleProperty { get; set; }
 			public ICollection<string> MultipleProperty { get; set; }
 			public TestableMutableObject NestedProperty { get; set; }
+            public AbstractObject AbstractProperty { get; set; }
 
 			// Additional scenarios
 			public ICollection<TestableMutableObject> MultipleNestedProperty { get; set; }
@@ -821,6 +865,16 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
             {
                 this[key] = value;
             }
+        }
+
+        private abstract class AbstractObject
+        {
+            public string StringProperty { get; set; }
+        }
+
+        private class DerivedObject : AbstractObject
+        {
+            public string DerivedStringProperty { get; set; }
         }
         #endregion
 	}
