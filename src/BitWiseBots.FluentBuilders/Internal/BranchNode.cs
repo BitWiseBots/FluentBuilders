@@ -58,14 +58,14 @@ namespace BitWiseBots.FluentBuilders.Internal
             }
             else
             {
-                foreach (var nodeBranch in _nodeBranches)
-                {
-                    nodeBranch.Value.ApplyTo(objectToBuild);
-                }
-
                 foreach (var nodeValue in _nodeValues)
                 {
                     nodeValue.Value.ApplyTo(objectToBuild);
+                }
+
+                foreach (var nodeBranch in _nodeBranches)
+                {
+                    nodeBranch.Value.ApplyTo(objectToBuild);
                 }
             }
         }
@@ -76,7 +76,7 @@ namespace BitWiseBots.FluentBuilders.Internal
         /// <returns>The constructed valueFunc for this node with all child nodes already processed.</returns>
         public object ApplyToConstructor()
         {
-            var value = GetOrCreateValue();
+            var value = GetOrCreateValue(null);
             if (IsBuilderNode)
             {
                 var genApplyMethod = ApplyToBuilderMethod.MakeGenericMethod(NodeType);
@@ -189,8 +189,13 @@ namespace BitWiseBots.FluentBuilders.Internal
         /// Get the valueFunc to be used for the current node.
         /// </summary>
         /// <returns>Either a simple valueFunc if the node represents a mutable object, or a <see cref="Builder{T}"/> of the type for an immutable object.</returns>
-        protected object GetOrCreateValue()
+        protected object GetOrCreateValue(object currentValue)
         {
+            if (currentValue!= null)
+            {
+                return currentValue;
+            }
+
             if (IsMutable)
             {
                 return Activator.CreateInstance(NodeType, true);

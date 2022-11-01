@@ -27,12 +27,12 @@ namespace BitWiseBots.FluentBuilders.Internal
         /// <inheritdoc />
         public override void ApplyTo(object objectToBuild)
         {
-            var value = GetOrCreateValue();
-            ApplyToChildren(value);
-
-            if (UsedByConstructor) return; 
+            if (UsedByConstructor) return;
 
             var memberInfo = (PropertyInfo)_property.Member;
+
+            var value = GetOrCreateValue(memberInfo.GetValue(objectToBuild));
+            ApplyToChildren(value);
 
             if (IsBuilderNode)
             {
