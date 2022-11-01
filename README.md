@@ -1,4 +1,4 @@
-# <img src="logo.png" alt="logo" width="32" height="32"> FluentBuilders
+# ![Logo](https://raw.githubusercontent.com/BitWiseBots/FluentBuilders/main/logo-small.png) FluentBuilders
 A .NET Standard library that provides a generic builder pattern capable of creating simple to complex object graphs. Designed to be used for unit testing.
 
 
