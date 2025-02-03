@@ -16,12 +16,7 @@ jobs:
             echo 'export PATH="$PATH:/root/.dotnet/tools"' >> $BASH_ENV
       - run:
           name: "Run Unit Tests"
-          command: dotnet test --logger "trx" --results-directory "TestResults"
-      - run:
-          name: "Run Test Coverage"
-          command: |
-              dotnet tool install JetBrains.dotCover.GlobalTool -g
-              dotnet dotcover test --dcReportType=HTML --dcOutput=TestResults\coverage.html --no-build
+          command: dotnet test --logger "trx" --results-directory "TestResults" --collect:"XPlat Code Coverage"
       - run:
           name: "Upload Test Results"
           when: always
