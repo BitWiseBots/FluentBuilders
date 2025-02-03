@@ -1,4 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace BitWiseBots.FluentBuilders.Internal
 {
@@ -27,15 +29,25 @@ namespace BitWiseBots.FluentBuilders.Internal
         {
             if (UsedByConstructor) return;
 
-            var value = GetOrCreateValue();
-            ApplyToChildren(value);
-            
             var memberInfo = _property.Indexer;
             var indexerArguments = _property.GetIndexerArguments();
 
-            var objectType = objectToBuild.GetType();
+            object currentValue = null;
+            try
+            {
+                currentValue = memberInfo.GetValue(objectToBuild, indexerArguments);
+            }
+            catch
+            {
+                //No value set
+            }
+
+            var value = GetOrCreateValue(currentValue);
+            ApplyToChildren(value);
+            
             if (IsBuilderNode)
             {
+                var objectType = objectToBuild.GetType();
                 var genMethod = BuildBuilderMethod.MakeGenericMethod(objectType);
                 var builderValue = genMethod.Invoke(this, new []{ value });
                 memberInfo!.SetValue(objectToBuild, builderValue, indexerArguments);
