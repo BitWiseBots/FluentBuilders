@@ -7,7 +7,7 @@ jobs:
   test:
     description: Setup and run unit tests
     docker:
-      - image: bitwisebots/cci-dotnet-multitarget:0.0.1
+      - image: mcr.microsoft.com/dotnet/sdk:9.0
     steps:
       - checkout
       - run: 
@@ -16,27 +16,22 @@ jobs:
             echo 'export PATH="$PATH:/root/.dotnet/tools"' >> $BASH_ENV
       - run:
           name: "Run Unit Tests"
-          command: dotnet test --logger "trx" --results-directory "TestResults"
-      - run:
-          name: "Run Test Coverage"
-          command: |
-              dotnet tool install JetBrains.dotCover.GlobalTool -g
-              dotnet dotcover test --dcReportType=HTML --dcOutput=TestResults\coverage.html --no-build
+          command: dotnet test --results-directory "TestResults" --logger "trx;LogFileName=results.trx" --collect:"XPlat Code Coverage" 
       - run:
           name: "Upload Test Results"
           when: always
           command: |
               dotnet tool install -g trx2junit
-              trx2junit TestResults/*.trx
+              trx2junit TestResults/results.trx
       - store_test_results:
-          path: TestResults
+          path: TestResults/results.xml
       - store_artifacts:
           path: TestResults
           destination: TestResults
   buildAndDeploy:
     description: Build and Deploy library with Release configuration
     docker:
-      - image: bitwisebots/cci-dotnet-multitarget:0.0.1
+      - image: mcr.microsoft.com/dotnet/sdk:9.0
     steps:
       - checkout
       - run: 
