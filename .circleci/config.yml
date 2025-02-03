@@ -7,7 +7,7 @@ jobs:
   test:
     description: Setup and run unit tests
     docker:
-      - image: bitwisebots/cci-dotnet-multitarget:0.0.1
+      - image: mcr.microsoft.com/dotnet/sdk:9.0
     steps:
       - checkout
       - run: 
@@ -31,7 +31,7 @@ jobs:
   buildAndDeploy:
     description: Build and Deploy library with Release configuration
     docker:
-      - image: bitwisebots/cci-dotnet-multitarget:0.0.1
+      - image: mcr.microsoft.com/dotnet/sdk:9.0
     steps:
       - checkout
       - run: 
