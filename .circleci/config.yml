@@ -16,15 +16,15 @@ jobs:
             echo 'export PATH="$PATH:/root/.dotnet/tools"' >> $BASH_ENV
       - run:
           name: "Run Unit Tests"
-          command: dotnet test --logger "trx" --results-directory "TestResults" --collect:"XPlat Code Coverage"
+          command: dotnet test --logger "trx;LogFileName=TestResults/results.trx" --collect:"XPlat Code Coverage"
       - run:
           name: "Upload Test Results"
           when: always
           command: |
               dotnet tool install -g trx2junit
-              trx2junit TestResults/*.trx
+              trx2junit TestResults/results.trx
       - store_test_results:
-          path: TestResults
+          path: TestResults/results.trx
       - store_artifacts:
           path: TestResults
           destination: TestResults
