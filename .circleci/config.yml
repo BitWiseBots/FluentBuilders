@@ -16,7 +16,7 @@ jobs:
             echo 'export PATH="$PATH:/root/.dotnet/tools"' >> $BASH_ENV
       - run:
           name: "Run Unit Tests"
-          command: dotnet test --logger "trx;LogFileName=results.trx" --collect:"XPlat Code Coverage" 
+          command: dotnet test --results-directory "TestResults" --logger "trx;LogFileName=results.trx" --collect:"XPlat Code Coverage" 
       - run:
           name: "Upload Test Results"
           when: always
