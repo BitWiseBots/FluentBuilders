@@ -211,12 +211,20 @@ namespace BitWiseBots.FluentBuilders
 
         /// <summary>
         /// Creates a new instance of <typeparamref name="T"/> either using <see cref="Activator"/> or a provided constructor expression.
-        /// Or if <paramref name="baseline"/> is provided, the builder config will be applied to the existing instance.
         /// </summary>
         [PublicAPI]
-        public T Build(T baseline = default)
+        public T Build()
         {
-            var builtObject = baseline ?? Create();
+            return Build(Create());
+        }
+
+        /// <summary>
+        /// Executes the builder configuration on an existing instance of <typeparamref name="T"/>.
+        /// </summary>
+        [PublicAPI]
+        public T Build(T baseline)
+        {
+            var builtObject = baseline;
 
             BuilderRootNode.ApplyTo(builtObject);
 

@@ -487,7 +487,7 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
         }
         #endregion
 
-        #region Immutable With Tests
+#region Immutable With Tests
 
         [Fact]
         public void Build_ShouldThrowBuildConfigurationException_WhenImmutableObjectHasNoConstructorStored()
@@ -741,8 +741,24 @@ namespace BitWiseBots.FluentBuilders.Tests.Unit.Internal
             Assert.Equal(0, result.IntProperty);
         }
 
-        #endregion
-        #region TestSupportTypes
+        [Fact]
+        public void Build_ShouldUseExpressionInConstructor_WhenTypeIsRecord()
+        {
+            AddConstructor<TestableRecord>(b => new TestableRecord(b.From(o => o.MutableObject)));
+
+            var builder = Create<TestableRecord>()
+                .With(o => o.MutableObject, Create<TestableMutableObject>().With(o2 => o2.SingleProperty, "someValue"));
+
+            var result = builder.Build();
+
+            Assert.Equal("someValue", result.MutableObject.SingleProperty);
+        }
+
+#endregion
+#region TestSupportTypes
+
+        private readonly record struct TestableRecord(TestableMutableObject MutableObject);
+
 		private class TestableMutableObject : IEquatable<TestableMutableObject>
 		{
 			/// <inheritdoc />
